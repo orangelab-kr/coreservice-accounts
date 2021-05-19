@@ -1,6 +1,8 @@
-import dotenv from 'dotenv';
-import getRouter from './routes';
 import serverless from 'serverless-http';
-if (process.env.NODE_ENV === 'development') dotenv.config();
+import { getRouter } from '.';
 
-export const handler = serverless(getRouter());
+export * from './routes';
+export * from './tools';
+
+const options = { basePath: '/v1/accounts' };
+export const handler = serverless(getRouter(), options);
