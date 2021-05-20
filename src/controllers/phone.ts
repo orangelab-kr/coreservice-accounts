@@ -6,17 +6,32 @@ const { prisma } = Database;
 const phoneUtil = PhoneNumberUtil.getInstance();
 
 export class Phone {
-  public static async createPhone(phone: string): Promise<PhoneModel> {
-    phone = phoneUtil.format(
-      phoneUtil.parse(phone, 'KR'),
+  public static async createPhone(phoneNo: string): Promise<PhoneModel> {
+    phoneNo = phoneUtil.format(
+      phoneUtil.parse(phoneNo, 'KR'),
       PhoneNumberFormat.E164
     );
 
-    return prisma.phoneModel.create({ data: { phone } });
+    return prisma.phoneModel.create({ data: { phoneNo } });
+  }
+
+  public static async isUnusedPhoneNo(phoneNo: string): Promise<boolean> {
+    const users = await prisma.userModel.count({ where: { phoneNo } });
+    return users > 0;
+  }
+
+  public static async isUnusedPhoneNoOrThrow(phoneNo: string): Promise<void> {
+    const exists = await this.isUnusedPhoneNo(phoneNo);
+    if (exists) {
+      throw new InternalError(
+        '이미 회원가입한 사용자입니다.',
+        OPCODE.ALREADY_EXISTS
+      );
+    }
   }
 
   public static async getPhone(phoneId: string): Promise<PhoneModel | null> {
-    return prisma.phoneModel.findFirst({ where: { phoneId } });
+    return prisma.phoneModel.findFirst({ where: { phoneId, usedAt: null } });
   }
 
   public static async getPhoneOrThrow(phoneId: string): Promise<PhoneModel> {
@@ -31,7 +46,8 @@ export class Phone {
     return phone;
   }
 
-  public static async revokePhone(phoneId: string): Promise<PhoneModel> {
+  public static async revokePhone(phone: PhoneModel): Promise<PhoneModel> {
+    const { phoneId } = phone;
     return prisma.phoneModel.update({
       where: { phoneId },
       data: { usedAt: new Date() },

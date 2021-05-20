@@ -2,6 +2,7 @@ import express, { Application } from 'express';
 import morgan from 'morgan';
 import os from 'os';
 import { InternalError, logger, OPCODE, Wrapper } from '..';
+import { getAuthRouter } from './auth';
 import { getMethodsRouter } from './methods';
 
 export * from './methods';
@@ -18,6 +19,7 @@ export function getRouter(): Application {
   router.use(logging);
   router.use(express.json());
   router.use(express.urlencoded({ extended: true }));
+  router.use('/auth', getAuthRouter());
   router.use('/methods', getMethodsRouter());
 
   router.get(

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Auth, Wrapper } from '../..';
+import { Method, Wrapper } from '../..';
 import { kakao, OPCODE } from '../../tools';
 
 export function getMethodsKakaoRouter(): Router {
@@ -25,7 +25,7 @@ export function getMethodsKakaoRouter(): Router {
   router.post(
     '/',
     Wrapper(async (req, res) => {
-      const userInfo = await Auth.getUserInfoByKakao(req.body);
+      const userInfo = await Method.getUserInfoByKakao(req.body);
       res.json({ opcode: OPCODE.SUCCESS, userInfo });
     })
   );

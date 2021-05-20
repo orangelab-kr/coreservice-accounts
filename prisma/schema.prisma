@@ -7,7 +7,7 @@ generator client {
   provider = "prisma-client-js"
 }
 
-enum MethodType {
+enum MethodProvider {
   kakao
   apple
 }
@@ -16,10 +16,12 @@ model UserModel {
   userId String @id @default(uuid())
 
   realname String
-  phone    String
+  phoneNo  String
   email    String?
   birthday DateTime
   number   LicenseModel?
+
+  methods MethodModel[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -29,8 +31,8 @@ model UserModel {
 model PhoneModel {
   phoneId String @id @default(uuid())
 
-  phone String
-  code  String?
+  phoneNo String
+  code    String?
 
   usedAt    DateTime?
   createdAt DateTime  @default(now())
@@ -42,7 +44,10 @@ model MethodModel {
   methodId    String @id @default(uuid())
   description String
 
-  type     MethodType
+  userId String
+  user   UserModel @relation(fields: [userId], references: [userId])
+
+  provider MethodProvider
   identity String
 
   createdAt DateTime  @default(now())
