@@ -5,3 +5,5 @@ export * from './logger';
 export * from './opcode';
 export * from './wrapper';
 export * from './wrapper';
+export * from './kakao';
+export * from './platform';

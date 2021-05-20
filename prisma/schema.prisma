@@ -7,9 +7,9 @@ generator client {
   provider = "prisma-client-js"
 }
 
-enum SocialType {
-  local
+enum MethodType {
   kakao
+  apple
 }
 
 model UserModel {
@@ -19,18 +19,30 @@ model UserModel {
   phone    String
   email    String?
   birthday DateTime
-  license LicenseModel?
+  number   LicenseModel?
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 }
 
-model SocialModel {
-  socialId String @id @default(uuid())
+model PhoneModel {
+  phoneId String @id @default(uuid())
+
+  phone String
+  code  String
+
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+model MethodModel {
+  methodId    String @id @default(uuid())
   description String
 
-  type SocialType
+  type     MethodType
   identity String
 
   createdAt DateTime  @default(now())
@@ -41,10 +53,10 @@ model SocialModel {
 model SessionModel {
   sessionId String @id @default(uuid())
 
-  platform String
+  platform       String
   messagingToken String?
-  
-  usedAt DateTime @default(now())
+
+  usedAt    DateTime  @default(now())
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
@@ -56,15 +68,10 @@ model LicenseModel {
   userId String
   user   UserModel @relation(fields: [userId], references: [userId])
 
-  isManual Boolean @default(false)
-  url String?
   realname String?
-  birthday DateTime?
-  identity String?
-  license String?
-  phone String?
+  birthday DateTime
+  licenseStr String?
 
-  approvedAt DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?

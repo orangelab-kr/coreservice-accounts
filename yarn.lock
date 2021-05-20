@@ -387,6 +387,20 @@
     "@nodelib/fs.scandir" "2.1.4"
     fastq "^1.6.0"
 
+"@openauth/core@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@openauth/core/-/core-0.3.1.tgz#fb5e79c3c79c6d387b8941c971a11552ed9caef0"
+  integrity sha512-dFS3mOEOeGE53nwUW63/vKGG+rgEswTde68Td4SEo2H3YcnX4snRTmtbvGLxqsiw5OlOOdcnknHXKrkLTYmLqw==
+  dependencies:
+    axios "^0.21.0"
+
+"@openauth/kakao@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@openauth/kakao/-/kakao-0.3.1.tgz#36af09eda577469aa449109cfa98032157f1820d"
+  integrity sha512-SQFAY2XGX3BzQkjtBhiFk9Sxm9hGAaxQRy1D9LSrZka9/23l69yLS9RXPOwGT0vwBiZK5CTsm5sVhpvNM8pbwQ==
+  dependencies:
+    "@openauth/core" "^0.3.1"
+
 "@prisma/client@2.22.1":
   version "2.22.1"
   resolved "https://registry.yarnpkg.com/@prisma/client/-/client-2.22.1.tgz#10fdcd1532a6baf46dd1c464cad9a54af0532bc8"
@@ -1504,7 +1518,7 @@ aws4@^1.8.0:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.11.0.tgz#d61f46d83b2519250e2784daf5b09479a8b41c59"
   integrity sha512-xh1Rl34h6Fi1DC2WWKfxUTVqRsNnr6LsKz2+hfwDxQJWmrx8+c7ylaqBMcHfl1U1r2dsifOvKX3LQuLNZ+XSvA==
 
-axios@^0.21.1:
+axios@^0.21.0, axios@^0.21.1:
   version "0.21.1"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.1.tgz#22563481962f4d6bde9a76d516ef0e5d3c09b2b8"
   integrity sha512-dKQiRHxGD9PPRIUNIWvZhPTPpl1rf/OxTYKsqKUDjBwYylTvV7SjSHJb9ratfyzM6wCdLCOYLzs73qpg5c4iGA==
