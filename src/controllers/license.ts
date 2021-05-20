@@ -1,4 +1,4 @@
-import { LicenseModel, Prisma, UserModel } from '.prisma/client';
+import { LicenseModel, Prisma, UserModel } from '@prisma/client';
 import {
   Database,
   getPlatformClient,
