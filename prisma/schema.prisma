@@ -30,7 +30,7 @@ model PhoneModel {
   phoneId String @id @default(uuid())
 
   phone String
-  code  String
+  code  String?
 
   usedAt    DateTime?
   createdAt DateTime  @default(now())
@@ -68,8 +68,8 @@ model LicenseModel {
   userId String
   user   UserModel @relation(fields: [userId], references: [userId])
 
-  realname String?
-  birthday DateTime
+  realname   String?
+  birthday   DateTime
   licenseStr String?
 
   createdAt DateTime  @default(now())
