@@ -8,7 +8,8 @@ import {
 import dayjs from 'dayjs';
 import Joi from 'joi';
 import { kakao, Phone, UserInfo } from '..';
-import { Database, InternalError, OPCODE, $ } from '../tools';
+import { Database, InternalError, OPCODE, $$$ } from '../tools';
+import { PreUserModel } from './auth';
 
 const { prisma } = Database;
 
@@ -39,7 +40,7 @@ export class Method {
     provider: MethodProvider,
     showValue = false
   ): Promise<MethodModel> {
-    const method = await $(Method.getMethod(user, provider, showValue));
+    const method = await $$$(Method.getMethod(user, provider, showValue));
     if (!method) {
       throw new InternalError(
         '해당 로그인 방식과 연결되지 않았습니다.',
@@ -51,7 +52,7 @@ export class Method {
   }
 
   public static async getMethod(
-    user: UserModel,
+    user: UserModel | PreUserModel,
     provider: MethodProvider,
     showIdentity = false
   ): Promise<() => Prisma.Prisma__MethodModelClient<MethodModel | null>> {
@@ -132,6 +133,35 @@ export class Method {
     }
   }
 
+  public static async connectMethod(
+    user: UserModel | PreUserModel,
+    props: {
+      provider: MethodProvider;
+      identity: string;
+      description: string;
+    }
+  ): Promise<() => Prisma.Prisma__MethodModelClient<MethodModel>> {
+    const { userId } = user;
+    const { provider, identity, description } = props;
+    const method = await $$$(Method.getMethod(user, provider));
+    if (method) {
+      throw new InternalError(
+        '이미 연동된 로그인 수단입니다.',
+        OPCODE.ALREADY_EXISTS
+      );
+    }
+
+    return () =>
+      prisma.methodModel.create({
+        data: {
+          userId,
+          provider,
+          identity,
+          description,
+        },
+      });
+  }
+
   public static async getUserByMethodOrThrow(
     method: MethodModel
   ): Promise<UserModel> {
@@ -177,21 +207,13 @@ export class Method {
     return { realname, email, birthday, phone, methods };
   }
 
-  public static async createKakaoMethod(
-    userId: string,
+  public static async connectKakaoMethod(
+    user: UserModel | PreUserModel,
     accessToken: string
   ): Promise<() => Prisma.Prisma__MethodModelClient<MethodModel>> {
     const provider = MethodProvider.kakao;
     const { id: identity, nickname } = await kakao.getAuthUser(accessToken);
     const description = `${nickname}님의 카카오 계정`;
-    return () =>
-      prisma.methodModel.create({
-        data: {
-          userId,
-          provider,
-          description,
-          identity,
-        },
-      });
+    return this.connectMethod(user, { provider, identity, description });
   }
 }

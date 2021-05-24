@@ -6,7 +6,8 @@ const { prisma } = Database;
 type PrismaPromiseResult = PrismaPromise<any>;
 type PrismaPromiseOnce = Promise<() => PrismaPromiseResult>;
 
-export async function $<T extends PrismaPromiseOnce>(
+// This is $$$ transactions (first promise all then prisma transactions)
+export async function $$$<T extends PrismaPromiseOnce>(
   functions: T | T[]
 ): Promise<
   T extends PrismaPromiseOnce ? PrismaPromiseResult : PrismaPromiseResult[]
@@ -17,3 +18,9 @@ export async function $<T extends PrismaPromiseOnce>(
       )
     : functions.then((func) => func());
 }
+
+// Prisma Query to $$$ transactions
+export const $PQ =
+  async <T>(func: PrismaPromise<T>): Promise<() => PrismaPromise<T>> =>
+  () =>
+    func;

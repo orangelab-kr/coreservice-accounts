@@ -1,4 +1,4 @@
-import { PhoneModel } from '@prisma/client';
+import { PhoneModel, Prisma } from '@prisma/client';
 import { Database, InternalError, OPCODE } from '../tools';
 import { PhoneNumberFormat, PhoneNumberUtil } from 'google-libphonenumber';
 const { prisma } = Database;
@@ -46,11 +46,14 @@ export class Phone {
     return phone;
   }
 
-  public static async revokePhone(phone: PhoneModel): Promise<PhoneModel> {
+  public static async revokePhone(
+    phone: PhoneModel
+  ): Promise<() => Prisma.Prisma__PhoneModelClient<PhoneModel>> {
     const { phoneId } = phone;
-    return prisma.phoneModel.update({
-      where: { phoneId },
-      data: { usedAt: new Date() },
-    });
+    return () =>
+      prisma.phoneModel.update({
+        where: { phoneId },
+        data: { usedAt: new Date() },
+      });
   }
 }
