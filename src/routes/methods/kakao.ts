@@ -1,4 +1,4 @@
-import { MethodProvider } from '.prisma/client';
+import { MethodProvider } from '@prisma/client';
 import { Router } from 'express';
 import { Method, Wrapper } from '../..';
 import { UserMiddleware } from '../../middlewares';
