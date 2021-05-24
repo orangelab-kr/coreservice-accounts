@@ -1,6 +1,8 @@
+import { MethodProvider } from '.prisma/client';
 import { Router } from 'express';
 import { Method, Wrapper } from '../..';
-import { kakao, OPCODE } from '../../tools';
+import { UserMiddleware } from '../../middlewares';
+import { $, kakao, OPCODE } from '../../tools';
 
 export function getMethodsKakaoRouter(): Router {
   const router = Router();
@@ -11,6 +13,16 @@ export function getMethodsKakaoRouter(): Router {
       const token = String(req.query.token);
       const { accessToken } = await kakao.getAccessTokenResponse(token);
       res.json({ opcode: OPCODE.SUCCESS, accessToken });
+    })
+  );
+
+  router.delete(
+    '/',
+    UserMiddleware(),
+    Wrapper(async (req, res) => {
+      const provider = MethodProvider.kakao;
+      const methods = await $(Method.disconnectMethod(req.user, provider));
+      res.json({ opcode: OPCODE.SUCCESS, methods });
     })
   );
 

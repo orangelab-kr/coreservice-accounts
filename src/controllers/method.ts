@@ -8,7 +8,7 @@ import {
 import dayjs from 'dayjs';
 import Joi from 'joi';
 import { kakao, Phone, UserInfo } from '..';
-import { Database, InternalError, OPCODE } from '../tools';
+import { Database, InternalError, OPCODE, $ } from '../tools';
 
 const { prisma } = Database;
 
@@ -32,6 +32,60 @@ export class Method {
           deletedAt: true,
         },
       });
+  }
+
+  public static async getMethodOrThrow(
+    user: UserModel,
+    provider: MethodProvider,
+    showValue = false
+  ): Promise<MethodModel> {
+    const method = await $(Method.getMethod(user, provider, showValue));
+    if (!method) {
+      throw new InternalError(
+        '해당 로그인 방식과 연결되지 않았습니다.',
+        OPCODE.NOT_FOUND
+      );
+    }
+
+    return method;
+  }
+
+  public static async getMethod(
+    user: UserModel,
+    provider: MethodProvider,
+    showIdentity = false
+  ): Promise<() => Prisma.Prisma__MethodModelClient<MethodModel | null>> {
+    const { userId } = user;
+    return () =>
+      prisma.methodModel.findFirst({
+        where: { userId, provider },
+        select: {
+          methodId: true,
+          description: true,
+          userId: true,
+          provider: true,
+          identity: showIdentity,
+          createdAt: true,
+          updatedAt: true,
+          deletedAt: true,
+        },
+      });
+  }
+
+  public static async disconnectMethod(
+    user: UserModel,
+    provider: MethodProvider
+  ): Promise<() => Prisma.Prisma__MethodModelClient<MethodModel>> {
+    const method = await Method.getMethodOrThrow(user, provider);
+    if (!method) {
+      throw new InternalError(
+        '아직 연결하지 않은 로그인 수단입니다.',
+        OPCODE.ERROR
+      );
+    }
+
+    const { methodId } = method;
+    return () => prisma.methodModel.delete({ where: { methodId } });
   }
 
   public static async getMethodWithValue(

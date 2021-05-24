@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { Method } from '../../controllers';
 import { UserMiddleware } from '../../middlewares';
-import { OPCODE, TA, Wrapper } from '../../tools';
+import { $, OPCODE, Wrapper } from '../../tools';
 import { getMethodsKakaoRouter } from './kakao';
 
 export * from './kakao';
@@ -14,7 +14,7 @@ export function getMethodsRouter(): Router {
     '/',
     UserMiddleware(),
     Wrapper(async (req, res) => {
-      const [methods] = await TA([Method.getMethods(req.user, false)]);
+      const methods = await $(Method.getMethods(req.user, false));
       res.json({ opcode: OPCODE.SUCCESS, methods });
     })
   );

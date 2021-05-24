@@ -5,7 +5,7 @@ import {
   InternalError,
   Joi,
   OPCODE,
-  TA,
+  $,
 } from '../tools';
 import { PreUserModel } from './auth';
 
@@ -25,7 +25,7 @@ export class License {
   public static async getLicenseOrThrow(
     user: UserModel
   ): Promise<LicenseModel> {
-    const [license] = await TA([this.getLicense(user)]);
+    const license = await $(this.getLicense(user));
     if (!license) {
       throw new InternalError(
         '아직 면허 인증을 진행하지 않으셨습니다.',
