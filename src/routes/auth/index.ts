@@ -20,10 +20,21 @@ export function getAuthRouter(): Router {
   );
 
   router.post(
+    '/',
+    UserMiddleware(),
+    Wrapper(async (req, res) => {
+      const user = await Auth.modifyUser(req.user, req.body);
+      res.json({ opcode: OPCODE.SUCCESS, user });
+    })
+  );
+
+  router.post(
     '/signup',
     Wrapper(async (req, res) => {
+      const userAgent = req.headers['user-agent'];
       const user = await Auth.signupUser(req.body);
-      res.json({ opcode: OPCODE.SUCCESS, user });
+      const sessionId = await Session.createSession(user, userAgent);
+      res.json({ opcode: OPCODE.SUCCESS, sessionId, user });
     })
   );
 

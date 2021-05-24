@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { $, OPCODE, UserMiddleware, Wrapper } from '..';
+import { $$$, OPCODE, UserMiddleware, Wrapper } from '..';
 import { License } from '../controllers';
 
 export function getLicenseRouter(): Router {
@@ -19,7 +19,7 @@ export function getLicenseRouter(): Router {
     UserMiddleware(),
     Wrapper(async (req, res) => {
       const { licenseStr } = req.body;
-      await $([
+      await $$$([
         License.deleteLicense(req.user),
         License.setLicense(req.user, licenseStr),
       ]);
