@@ -1,14 +1,8 @@
-import {
-  MethodProvider,
-  Prisma,
-  PrismaPromise,
-  UserModel,
-} from '@prisma/client';
-import dayjs from 'dayjs';
-import { Joi, kakao, Phone } from '..';
+import { PrismaPromise, UserModel } from '@prisma/client';
+import * as UUID from 'uuid';
+import { Joi, Phone } from '..';
 import { Database, InternalError, OPCODE } from '../tools';
 import { License } from './license';
-import * as UUID from 'uuid';
 import { Method } from './method';
 
 const { prisma } = Database;
@@ -90,7 +84,6 @@ export class Auth {
       transactions.push(createLicense());
     };
 
-    console.log(!methods || !methods.kakao, methods);
     const asyncMethodKakao = async () => {
       console.log(methods);
       if (!methods || !methods.kakao) return;

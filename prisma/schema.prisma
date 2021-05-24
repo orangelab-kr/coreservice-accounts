@@ -4,7 +4,7 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "rhel-openssl-1.0.x"]
 }
 
@@ -22,8 +22,10 @@ model UserModel {
   birthday DateTime
   number   LicenseModel?
 
-  methods MethodModel[]
+  methods  MethodModel[]
+  sessions SessionModel[]
 
+  usedAt    DateTime  @default(now())
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
@@ -59,7 +61,10 @@ model MethodModel {
 model SessionModel {
   sessionId String @id @default(uuid())
 
-  platform       String
+  userId String
+  user   UserModel @relation(fields: [userId], references: [userId])
+
+  platform       String @default("")
   messagingToken String?
 
   usedAt    DateTime  @default(now())

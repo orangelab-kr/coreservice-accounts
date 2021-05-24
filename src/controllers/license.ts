@@ -1,25 +1,31 @@
-import { LicenseModel, Prisma, UserModel } from '@prisma/client';
+import { LicenseModel, Prisma, PrismaPromise, UserModel } from '@prisma/client';
 import {
   Database,
   getPlatformClient,
   InternalError,
   Joi,
   OPCODE,
+  TA,
 } from '../tools';
 import { PreUserModel } from './auth';
 
 const { prisma } = Database;
 
 export class License {
-  public static async getLicense(user: UserModel): Promise<License | null> {
+  public static async getLicense(
+    user: UserModel
+  ): Promise<() => Prisma.Prisma__LicenseModelClient<LicenseModel | null>> {
     const { userId } = user;
-    return prisma.licenseModel.findFirst({
-      where: { userId },
-    });
+    return () =>
+      prisma.licenseModel.findFirst({
+        where: { userId },
+      });
   }
 
-  public static async getLicenseOrThrow(user: UserModel): Promise<License> {
-    const license = await this.getLicense(user);
+  public static async getLicenseOrThrow(
+    user: UserModel
+  ): Promise<LicenseModel> {
+    const [license] = await TA([this.getLicense(user)]);
     if (!license) {
       throw new InternalError(
         '아직 면허 인증을 진행하지 않으셨습니다.',
@@ -30,11 +36,14 @@ export class License {
     return license;
   }
 
-  public static async deleteLicense(user: UserModel): Promise<void> {
+  public static async deleteLicense(
+    user: UserModel
+  ): Promise<() => PrismaPromise<Prisma.BatchPayload>> {
     const { userId } = user;
-    await prisma.licenseModel.deleteMany({
-      where: { userId },
-    });
+    return () =>
+      prisma.licenseModel.deleteMany({
+        where: { userId },
+      });
   }
 
   public static async setLicense(
