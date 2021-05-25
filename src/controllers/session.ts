@@ -14,7 +14,6 @@ export class Session {
     const sessionId = await Session.generateSessionId();
     await prisma.sessionModel.create({
       data: { sessionId, platform, user: { connect: { userId } } },
-      
     });
 
     return sessionId;

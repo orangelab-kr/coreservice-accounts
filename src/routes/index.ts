@@ -5,9 +5,11 @@ import {
   getAuthLoginRouter,
   getAuthRouter,
   getCouponsRouter,
+  getInternalRouter,
   getLicenseRouter,
   getMethodsRouter,
   InternalError,
+  InternalMiddleware,
   logger,
   OPCODE,
   UserMiddleware,
@@ -16,6 +18,7 @@ import {
 
 export * from './auth';
 export * from './coupons';
+export * from './internal';
 export * from './license';
 export * from './methods';
 
@@ -36,6 +39,7 @@ export function getRouter(): Application {
   router.use('/methods', getMethodsRouter());
   router.use('/license', UserMiddleware(), getLicenseRouter());
   router.use('/coupons', UserMiddleware(), getCouponsRouter());
+  router.use('/internal', InternalMiddleware(), getInternalRouter());
 
   router.get(
     '/',
