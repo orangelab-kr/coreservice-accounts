@@ -1,8 +1,12 @@
 import { Router } from 'express';
-import { Auth, OPCODE, Wrapper } from '../..';
-import { Session } from '../../controllers';
-import { UserMiddleware } from '../../middlewares';
-import { getAuthLoginRouter } from './login';
+import {
+  Auth,
+  getAuthLoginRouter,
+  OPCODE,
+  Session,
+  UserMiddleware,
+  Wrapper,
+} from '../..';
 
 export * from './login';
 

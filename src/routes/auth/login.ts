@@ -1,6 +1,5 @@
 import { Router } from 'express';
-import { $$$, Method, OPCODE, Session, Wrapper } from '../..';
-import { Auth, Phone } from '../../controllers';
+import { $$$, Auth, Method, OPCODE, Phone, Session, Wrapper } from '../..';
 
 export function getAuthLoginRouter(): Router {
   const router = Router();

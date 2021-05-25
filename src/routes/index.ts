@@ -1,15 +1,23 @@
 import express, { Application } from 'express';
 import morgan from 'morgan';
 import os from 'os';
-import { InternalError, logger, OPCODE, Wrapper } from '..';
-import { UserMiddleware } from '../middlewares';
-import { getAuthRouter } from './auth';
-import { getAuthLoginRouter } from './auth/login';
-import { getLicenseRouter } from './license';
-import { getMethodsRouter } from './methods';
+import {
+  getAuthLoginRouter,
+  getAuthRouter,
+  getCouponsRouter,
+  getLicenseRouter,
+  getMethodsRouter,
+  InternalError,
+  logger,
+  OPCODE,
+  UserMiddleware,
+  Wrapper,
+} from '..';
 
-export * from './methods';
+export * from './auth';
+export * from './coupons';
 export * from './license';
+export * from './methods';
 
 export function getRouter(): Application {
   const router = express();
@@ -27,6 +35,7 @@ export function getRouter(): Application {
   router.use('/login', getAuthLoginRouter());
   router.use('/methods', getMethodsRouter());
   router.use('/license', UserMiddleware(), getLicenseRouter());
+  router.use('/coupons', UserMiddleware(), getCouponsRouter());
 
   router.get(
     '/',

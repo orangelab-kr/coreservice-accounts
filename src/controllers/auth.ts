@@ -1,9 +1,7 @@
 import { PhoneModel, Prisma, PrismaPromise, UserModel } from '@prisma/client';
 import * as UUID from 'uuid';
-import { Joi, Phone, $$$ } from '..';
+import { $$$, Joi, License, Method, Phone } from '..';
 import { $PQ, Database, InternalError, OPCODE } from '../tools';
-import { License } from './license';
-import { Method } from './method';
 
 const { prisma } = Database;
 

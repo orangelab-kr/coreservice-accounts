@@ -7,9 +7,8 @@ import {
 } from '@prisma/client';
 import dayjs from 'dayjs';
 import Joi from 'joi';
-import { kakao, Phone, UserInfo } from '..';
-import { Database, InternalError, OPCODE, $$$ } from '../tools';
-import { PreUserModel } from './auth';
+import { kakao, Phone, PreUserModel, UserInfo } from '..';
+import { $$$, Database, InternalError, OPCODE } from '../tools';
 
 const { prisma } = Database;
 

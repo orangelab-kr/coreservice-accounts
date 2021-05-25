@@ -1,8 +1,12 @@
 import { Router } from 'express';
-import { Method } from '../../controllers';
-import { UserMiddleware } from '../../middlewares';
-import { $$$, OPCODE, Wrapper } from '../../tools';
-import { getMethodsKakaoRouter } from './kakao';
+import {
+  $$$,
+  getMethodsKakaoRouter,
+  Method,
+  OPCODE,
+  UserMiddleware,
+  Wrapper,
+} from '../..';
 
 export * from './kakao';
 
