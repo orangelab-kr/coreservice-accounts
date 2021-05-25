@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { $$$, Coupon, OPCODE, Wrapper } from '..';
+import { $$$, Coupon, CouponMiddleware, OPCODE, Wrapper } from '..';
 
 export function getCouponsRouter(): Router {
   const router = Router();
@@ -9,6 +9,15 @@ export function getCouponsRouter(): Router {
     Wrapper(async (req, res) => {
       const { total, coupons } = await Coupon.getCoupons(req.user, req.query);
       res.json({ opcode: OPCODE.SUCCESS, coupons, total });
+    })
+  );
+
+  router.get(
+    '/:couponId',
+    CouponMiddleware(),
+    Wrapper(async (req, res) => {
+      const { coupon } = req;
+      res.json({ opcode: OPCODE.SUCCESS, coupon });
     })
   );
 

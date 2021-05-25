@@ -20,6 +20,29 @@ interface OpenApiDiscount {
 }
 
 export class Coupon {
+  public static async getCouponOrThrow(
+    user: UserModel,
+    couponId: string
+  ): Promise<CouponModel> {
+    const coupon = await $$$(this.getCoupon(user, couponId));
+    if (!coupon) {
+      throw new InternalError('쿠폰을 찾을 수 없습니다.', OPCODE.NOT_FOUND);
+    }
+
+    return coupon;
+  }
+
+  public static async getCoupon(
+    user: UserModel,
+    couponId: string
+  ): Promise<() => Prisma.Prisma__CouponModelClient<CouponModel | null>> {
+    const { userId } = user;
+    return () =>
+      prisma.couponModel.findFirst({
+        where: { userId, couponId },
+      });
+  }
+
   public static async getCoupons(
     user: UserModel,
     props: {
@@ -70,6 +93,18 @@ export class Coupon {
     ]);
 
     return { total, coupons };
+  }
+
+  public static async setCouponUsed(
+    coupon: CouponModel,
+    used: boolean
+  ): Promise<any> {
+    const { couponId } = coupon;
+    return () =>
+      prisma.couponModel.update({
+        where: { couponId },
+        data: { usedAt: used ? new Date() : null },
+      });
   }
 
   public static async enrollCoupon(
