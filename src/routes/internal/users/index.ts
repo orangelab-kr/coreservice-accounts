@@ -3,18 +3,18 @@ import {
   getInternalUsersCouponsRouter,
   InternalUserBySessionMiddleware,
   InternalUserMiddleware,
+  License,
   OPCODE,
   Wrapper,
 } from '../../..';
-import { License } from '../../../controllers';
 
 export * from './coupons';
 
 export function getInternalUsersRouter() {
   const router = Router();
 
-  router.get(
-    '/:userId',
+  router.use(
+    '/:userId/coupons',
     InternalUserMiddleware(),
     getInternalUsersCouponsRouter()
   );

@@ -4,6 +4,7 @@ import dayjs from 'dayjs';
 import jwt from 'jsonwebtoken';
 
 export * from './user';
+export * from './coupon';
 
 export function InternalMiddleware(): Callback {
   return Wrapper(async (req, res, next) => {

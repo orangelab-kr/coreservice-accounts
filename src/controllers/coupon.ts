@@ -95,15 +95,35 @@ export class Coupon {
     return { total, coupons };
   }
 
-  public static async setCouponUsed(
+  public static async modifyCoupon(
     coupon: CouponModel,
-    used: boolean
+    props: {
+      discountId?: string;
+      couponGroupId?: string;
+      usedAt?: Date;
+      expiredAt?: Date;
+    }
   ): Promise<any> {
     const { couponId } = coupon;
+    const schema = await Joi.object({
+      discountId: Joi.string().uuid().allow(null).optional(),
+      couponGroupId: Joi.string().uuid().optional(),
+      usedAt: Joi.date().allow(null).optional(),
+      expiredAt: Joi.date().allow(null).optional(),
+    });
+
+    const { discountId, couponGroupId, usedAt, expiredAt } =
+      await schema.validateAsync(props);
+
     return () =>
       prisma.couponModel.update({
         where: { couponId },
-        data: { usedAt: used ? new Date() : null },
+        data: {
+          discountId,
+          couponGroupId,
+          usedAt,
+          expiredAt,
+        },
       });
   }
 
