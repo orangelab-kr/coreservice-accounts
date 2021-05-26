@@ -11,7 +11,6 @@ declare global {
         sub: string;
         iss: string;
         aud: string;
-        prs: boolean[];
         iat: Date;
         exp: Date;
         sessionId: string;
