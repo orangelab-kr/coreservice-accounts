@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import {
-  getInternalUsersCouponsRouter,
   InternalUserBySessionMiddleware,
   InternalUserMiddleware,
   License,
@@ -8,16 +7,8 @@ import {
   Wrapper,
 } from '../../..';
 
-export * from './coupons';
-
 export function getInternalUsersRouter() {
   const router = Router();
-
-  router.use(
-    '/:userId/coupons',
-    InternalUserMiddleware(),
-    getInternalUsersCouponsRouter()
-  );
 
   router.get(
     '/:userId',
