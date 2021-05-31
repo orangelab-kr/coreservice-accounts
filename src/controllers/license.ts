@@ -28,7 +28,7 @@ export class License {
     const license = await $$$(this.getLicense(user));
     if (!license) {
       throw new InternalError(
-        '아직 면허 인증을 진행하지 않으셨습니다.',
+        '면허 인증 후 이용할 수 있습니다.',
         OPCODE.NOT_FOUND
       );
     }

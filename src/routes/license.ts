@@ -28,8 +28,8 @@ export function getLicenseRouter(): Router {
   router.delete(
     '/',
     Wrapper(async (req, res) => {
-      const license = await License.deleteLicense(req.user);
-      res.json({ opcode: OPCODE.SUCCESS, license });
+      await $$$(License.deleteLicense(req.user));
+      res.json({ opcode: OPCODE.SUCCESS });
     })
   );
 
