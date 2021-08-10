@@ -7,12 +7,15 @@ import {
   UserMiddleware,
   Wrapper,
 } from '../..';
+import { getMethodsPhoneRouter } from '../..';
 
 export * from './kakao';
+export * from './phone';
 
 export function getMethodsRouter(): Router {
   const router = Router();
   router.use('/kakao', getMethodsKakaoRouter());
+  router.use('/phone', getMethodsPhoneRouter());
 
   router.get(
     '/',

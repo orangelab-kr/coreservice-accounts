@@ -199,10 +199,7 @@ export class Method {
     const utc = { utc: true };
     const methods = { kakao: accessToken };
     const birthday = dayjs(`${user.birthyear}${user.birthday}`, utc).toDate();
-    const phone = await Phone.createPhone(user.phone_number).then(
-      ({ phoneId, phoneNo, code }) => ({ phoneId, phoneNo, code })
-    );
-
+    const phone = await Phone.createPhone(user.phone_number);
     return { realname, email, birthday, phone, methods };
   }
 

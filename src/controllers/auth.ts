@@ -51,7 +51,7 @@ export class Auth {
 
     const [userId, phoneObj] = await Promise.all([
       this.getUnusedUserId(),
-      Phone.getPhoneOrThrow(phone.phoneId),
+      Phone.getPhoneOrThrow(phone),
     ]);
 
     const { phoneNo } = phoneObj;
@@ -127,7 +127,7 @@ export class Auth {
     if (birthday && birthday !== user.birthday) data.birthday = birthday;
     if (email && email !== user.email) data.email = email;
     if (phone) {
-      phoneObj = await Phone.getPhoneOrThrow(phone.phoneId);
+      phoneObj = await Phone.getPhoneOrThrow(phone);
       if (phoneObj.phoneNo !== user.phoneNo) {
         await Phone.isUnusedPhoneNoOrThrow(phoneObj.phoneNo);
         data.phoneNo = phoneObj.phoneNo;
