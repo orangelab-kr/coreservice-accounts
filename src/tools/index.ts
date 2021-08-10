@@ -8,3 +8,4 @@ export * from './wrapper';
 export * from './kakao';
 export * from './platform';
 export * from './transactions';
+export * from './messageGateway';

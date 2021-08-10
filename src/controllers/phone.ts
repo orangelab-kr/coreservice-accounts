@@ -1,5 +1,11 @@
 import { PhoneModel, Prisma } from '@prisma/client';
-import { Database, InternalError, Joi, OPCODE } from '../tools';
+import {
+  Database,
+  InternalError,
+  Joi,
+  OPCODE,
+  sendMessageWithMessageGateway,
+} from '../tools';
 import { PhoneNumberFormat, PhoneNumberUtil } from 'google-libphonenumber';
 const { prisma } = Database;
 
@@ -22,8 +28,12 @@ export class Phone {
 
     const code = Phone.generateRandomCode();
     await Phone.revokeVerify(phoneNo);
+    await sendMessageWithMessageGateway({
+      name: 'verify',
+      phone: phoneNo,
+      fields: { code },
+    });
 
-    // todo: send message
     const phone = await prisma.phoneModel.create({
       data: { phoneNo, code },
       select: { phoneId: true, phoneNo: true, code: true },
