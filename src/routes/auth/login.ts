@@ -8,7 +8,7 @@ export function getAuthLoginRouter(): Router {
     '/phone',
     Wrapper(async (req, res) => {
       const userAgent = req.headers['user-agent'];
-      const phoneObj = await Phone.getPhoneOrThrow(req.body.phone.phoneId);
+      const phoneObj = await Phone.getPhoneOrThrow(req.body.phone);
       const user = await Auth.getUserByPhoneOrThrow(phoneObj.phoneNo);
       const sessionId = await Session.createSession(user, userAgent);
       res.json({ opcode: OPCODE.SUCCESS, sessionId, user });
