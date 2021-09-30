@@ -36,6 +36,46 @@ export interface UserInfo {
 }
 
 export class User {
+  public static async getUsers(props?: {
+    take?: number;
+    skip?: number;
+    search?: string;
+    orderByField?:
+      | 'realname'
+      | 'birthday'
+      | 'usedAt'
+      | 'createdAt'
+      | 'updatedAt';
+    orderBySort?: 'asc' | 'desc';
+  }): Promise<{ total: number; users: UserModel[] }> {
+    const { take, skip, search, orderByField, orderBySort } = await Joi.object({
+      take: Joi.number().default(10).optional(),
+      skip: Joi.number().default(0).optional(),
+      search: Joi.string().allow('').optional(),
+      orderByField: Joi.string()
+        .valid('realname', 'birthday', 'usedAt', 'createdAt', 'updatedAt')
+        .default('createdAt')
+        .optional(),
+      orderBySort: Joi.string().valid('asc', 'desc').default('desc').optional(),
+    }).validateAsync(props);
+    const where: Prisma.UserModelWhereInput = {};
+    const orderBy = { [orderByField]: orderBySort };
+    if (search) {
+      where.OR = [
+        { realname: { contains: search } },
+        { phoneNo: { contains: search } },
+        { email: { contains: search } },
+      ];
+    }
+
+    const [total, users] = await prisma.$transaction([
+      prisma.userModel.count({ where }),
+      prisma.userModel.findMany({ where, take, skip, orderBy }),
+    ]);
+
+    return { total, users };
+  }
+
   public static async signupUser(props: UserInfo): Promise<UserModel> {
     const transactions: PrismaPromise<any>[] = [];
     const schema = Joi.object({

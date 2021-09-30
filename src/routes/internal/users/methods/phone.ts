@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { OPCODE, Phone, Wrapper } from '../..';
+import { OPCODE, Phone, Wrapper } from '../../../..';
 
-export function getMethodsPhoneRouter(): Router {
+export function getInternalUsersMethodsPhoneRouter(): Router {
   const router = Router();
 
   router.get(

@@ -16,7 +16,7 @@ export class License {
     const { userId } = user;
     return () =>
       prisma.licenseModel.findFirst({
-        where: { userId },
+        where: { user: { some: { userId } } },
       });
   }
 
@@ -40,7 +40,7 @@ export class License {
     const { userId } = user;
     return () =>
       prisma.licenseModel.deleteMany({
-        where: { userId },
+        where: { user: { some: { userId } } },
       });
   }
 
@@ -62,10 +62,10 @@ export class License {
     return () =>
       prisma.licenseModel.create({
         data: {
-          userId,
           realname,
           birthday,
           licenseStr,
+          user: { connect: { userId } },
         },
       });
   }

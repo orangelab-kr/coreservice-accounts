@@ -15,7 +15,7 @@ declare global {
         exp: Date;
         sessionId: string;
         user: UserModel;
-        coupon: CouponModel;
+        session: SessionModel;
       };
     }
   }

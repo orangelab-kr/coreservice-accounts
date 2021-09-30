@@ -20,7 +20,9 @@ model UserModel {
   phoneNo  String
   email    String?
   birthday DateTime
-  license  LicenseModel?
+
+  licenseId String?
+  license   LicenseModel? @relation(fields: [licenseId], references: [licenseId])
 
   methods  MethodModel[]
   sessions SessionModel[]
@@ -59,7 +61,7 @@ model MethodModel {
 }
 
 model SessionModel {
-  sessionId String @id @default(uuid())
+  sessionId String @id
 
   userId String
   user   UserModel @relation(fields: [userId], references: [userId])
@@ -76,8 +78,7 @@ model SessionModel {
 model LicenseModel {
   licenseId String @id @default(uuid())
 
-  userId String
-  user   UserModel @relation(fields: [userId], references: [userId])
+  user UserModel[]
 
   realname   String?
   birthday   DateTime

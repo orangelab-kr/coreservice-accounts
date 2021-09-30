@@ -1,4 +1,13 @@
-import { Callback, InternalError, OPCODE, Session, User, Wrapper } from '../..';
+import {
+  Callback,
+  InternalError,
+  OPCODE,
+  Session,
+  User,
+  Wrapper,
+} from '../../..';
+
+export * from './session';
 
 export function InternalUserBySessionMiddleware(): Callback {
   return Wrapper(async (req, res, next) => {

@@ -31,6 +31,6 @@ export function LoggerMiddleware(): Callback {
       }
     });
 
-    next();
+    await next();
   });
 }

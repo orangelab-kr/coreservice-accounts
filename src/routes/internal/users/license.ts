@@ -1,13 +1,14 @@
 import { Router } from 'express';
-import { $$$, License, OPCODE, Wrapper } from '..';
+import { $$$, License, OPCODE, Wrapper } from '../../..';
 
-export function getLicenseRouter(): Router {
+export function getInternalUsersLicenseRouter(): Router {
   const router = Router();
 
   router.get(
     '/',
     Wrapper(async (req, res) => {
-      const license = await $$$(License.getLicense(req.user));
+      const { user } = req.internal;
+      const license = await $$$(License.getLicense(user));
       res.json({ opcode: OPCODE.SUCCESS, license });
     })
   );
@@ -15,10 +16,9 @@ export function getLicenseRouter(): Router {
   router.post(
     '/',
     Wrapper(async (req, res) => {
-      const { licenseStr } = req.body;
       await $$$([
-        License.deleteLicense(req.user),
-        License.setLicense(req.user, licenseStr),
+        License.deleteLicense(req.internal.user),
+        License.setLicense(req.internal.user, req.body.licenseStr),
       ]);
 
       res.json({ opcode: OPCODE.SUCCESS });
@@ -28,7 +28,7 @@ export function getLicenseRouter(): Router {
   router.delete(
     '/',
     Wrapper(async (req, res) => {
-      await $$$(License.deleteLicense(req.user));
+      await $$$(License.deleteLicense(req.internal.user));
       res.json({ opcode: OPCODE.SUCCESS });
     })
   );

@@ -2,12 +2,12 @@ import { Router } from 'express';
 import {
   $$$,
   getMethodsKakaoRouter,
+  getMethodsPhoneRouter,
   Method,
   OPCODE,
   UserMiddleware,
   Wrapper,
 } from '../..';
-import { getMethodsPhoneRouter } from '../..';
 
 export * from './kakao';
 export * from './phone';
