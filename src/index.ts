@@ -1,14 +1,7 @@
 import cors from 'cors';
 import express from 'express';
 import serverless from 'serverless-http';
-import {
-  Database,
-  getRouter,
-  InternalError,
-  LoggerMiddleware,
-  OPCODE,
-  Wrapper,
-} from '.';
+import { getRouter, InternalError, LoggerMiddleware, OPCODE, Wrapper } from '.';
 
 export * from './controllers';
 export * from './middlewares';
@@ -16,7 +9,6 @@ export * from './routes';
 export * from './tools';
 
 const app = express();
-Database.initPrisma();
 InternalError.registerSentry(app);
 
 app.use(cors());

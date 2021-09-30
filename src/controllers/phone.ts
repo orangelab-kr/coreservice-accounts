@@ -1,13 +1,12 @@
 import { PhoneModel, Prisma } from '@prisma/client';
+import { PhoneNumberFormat, PhoneNumberUtil } from 'google-libphonenumber';
 import {
-  Database,
   InternalError,
   Joi,
   OPCODE,
+  prisma,
   sendMessageWithMessageGateway,
 } from '../tools';
-import { PhoneNumberFormat, PhoneNumberUtil } from 'google-libphonenumber';
-const { prisma } = Database;
 
 const phoneUtil = PhoneNumberUtil.getInstance();
 

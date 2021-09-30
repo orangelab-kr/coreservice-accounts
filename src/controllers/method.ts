@@ -7,10 +7,16 @@ import {
 } from '@prisma/client';
 import dayjs from 'dayjs';
 import Joi from 'joi';
-import { kakao, Phone, PreUserModel, UserInfo } from '..';
-import { $$$, Database, InternalError, OPCODE } from '../tools';
-
-const { prisma } = Database;
+import {
+  $$$,
+  InternalError,
+  kakao,
+  OPCODE,
+  Phone,
+  PreUserModel,
+  prisma,
+  UserInfo,
+} from '..';
 
 export class Method {
   public static async getMethods(

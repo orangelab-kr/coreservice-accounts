@@ -1,9 +1,6 @@
 import { UserModel } from '@prisma/client';
 import crypto from 'crypto';
-import { InternalError, OPCODE } from '..';
-import { Database } from '../tools';
-
-const { prisma } = Database;
+import { InternalError, OPCODE, prisma } from '..';
 
 export class Session {
   public static async createSession(

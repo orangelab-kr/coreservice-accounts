@@ -1,9 +1,16 @@
 import { PhoneModel, Prisma, PrismaPromise, UserModel } from '@prisma/client';
 import * as UUID from 'uuid';
-import { $$$, Joi, License, Method, Phone } from '..';
-import { $PQ, Database, InternalError, OPCODE } from '../tools';
-
-const { prisma } = Database;
+import {
+  $$$,
+  $PQ,
+  InternalError,
+  Joi,
+  License,
+  Method,
+  OPCODE,
+  Phone,
+  prisma,
+} from '..';
 
 export interface PreUserModel {
   userId: string;

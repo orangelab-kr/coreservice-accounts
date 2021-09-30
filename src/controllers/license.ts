@@ -1,15 +1,13 @@
 import { LicenseModel, Prisma, PrismaPromise, UserModel } from '@prisma/client';
 import {
-  Database,
+  $$$,
   getPlatformClient,
   InternalError,
   Joi,
   OPCODE,
-  $$$,
-} from '../tools';
-import { PreUserModel } from './auth';
-
-const { prisma } = Database;
+  PreUserModel,
+  prisma,
+} from '..';
 
 export class License {
   public static async getLicense(
@@ -105,7 +103,7 @@ export class License {
         .post('license', { json })
         .json<resJson>();
       return res.isValid;
-    } catch (err) {}
+    } catch (err: any) {}
     return false;
   }
 
