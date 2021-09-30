@@ -1,4 +1,4 @@
-import { Auth, Callback, InternalError, OPCODE, Session, Wrapper } from '../..';
+import { Callback, InternalError, OPCODE, Session, User, Wrapper } from '../..';
 
 export function InternalUserBySessionMiddleware(): Callback {
   return Wrapper(async (req, res, next) => {
@@ -28,7 +28,7 @@ export function InternalUserMiddleware(): Callback {
       );
     }
 
-    const user = await Auth.getUserOrThrow(userId);
+    const user = await User.getUserOrThrow(userId);
     req.internal.user = user;
 
     await next();

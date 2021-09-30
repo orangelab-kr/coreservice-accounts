@@ -4,9 +4,8 @@ datasource db {
 }
 
 generator client {
-  provider        = "prisma-client-js"
-  binaryTargets   = ["native", "rhel-openssl-1.0.x"]
-  previewFeatures = ["nApi"]
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x"]
 }
 
 enum MethodProvider {
@@ -21,7 +20,7 @@ model UserModel {
   phoneNo  String
   email    String?
   birthday DateTime
-  number   LicenseModel?
+  license  LicenseModel?
 
   methods  MethodModel[]
   sessions SessionModel[]

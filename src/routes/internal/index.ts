@@ -3,7 +3,7 @@ import { getInternalUsersRouter } from '.';
 
 export * from './users';
 
-export function getInternalRouter() {
+export function getInternalRouter(): Router {
   const router = Router();
 
   router.use('/users', getInternalUsersRouter());

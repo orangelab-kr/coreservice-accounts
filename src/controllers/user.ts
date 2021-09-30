@@ -28,7 +28,7 @@ export interface UserInfo {
   };
 }
 
-export class Auth {
+export class User {
   public static async signupUser(props: UserInfo): Promise<UserModel> {
     const transactions: PrismaPromise<any>[] = [];
     const schema = Joi.object({

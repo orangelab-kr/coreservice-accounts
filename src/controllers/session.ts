@@ -29,7 +29,7 @@ export class Session {
       if (!user) throw Error();
 
       return user;
-    } catch (err) {
+    } catch (err: any) {
       throw new InternalError(
         '로그아웃되었습니다 다시 로그인해주세요.',
         OPCODE.REQUIRED_LOGIN

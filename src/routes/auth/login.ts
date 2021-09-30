@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { $$$, Auth, Method, OPCODE, Phone, Session, Wrapper } from '../..';
+import { $$$, User, Method, OPCODE, Phone, Session, Wrapper } from '../..';
 
 export function getAuthLoginRouter(): Router {
   const router = Router();
@@ -9,7 +9,7 @@ export function getAuthLoginRouter(): Router {
     Wrapper(async (req, res) => {
       const userAgent = req.headers['user-agent'];
       const phoneObj = await Phone.getPhoneOrThrow(req.body.phone);
-      const user = await Auth.getUserByPhoneOrThrow(phoneObj.phoneNo);
+      const user = await User.getUserByPhoneOrThrow(phoneObj.phoneNo);
       const sessionId = await Session.createSession(user, userAgent);
       res.json({ opcode: OPCODE.SUCCESS, sessionId, user });
       await $$$(Phone.revokePhone(phoneObj));

@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import {
-  Auth,
   getAuthLoginRouter,
   OPCODE,
   Session,
+  User,
   UserMiddleware,
   Wrapper,
 } from '../..';
@@ -27,7 +27,7 @@ export function getAuthRouter(): Router {
     '/',
     UserMiddleware(),
     Wrapper(async (req, res) => {
-      const user = await Auth.modifyUser(req.user, req.body);
+      const user = await User.modifyUser(req.user, req.body);
       res.json({ opcode: OPCODE.SUCCESS, user });
     })
   );
@@ -36,7 +36,7 @@ export function getAuthRouter(): Router {
     '/signup',
     Wrapper(async (req, res) => {
       const userAgent = req.headers['user-agent'];
-      const user = await Auth.signupUser(req.body);
+      const user = await User.signupUser(req.body);
       const sessionId = await Session.createSession(user, userAgent);
       res.json({ opcode: OPCODE.SUCCESS, sessionId, user });
     })

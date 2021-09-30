@@ -124,7 +124,7 @@ export class Method {
 
       const user = await Method.getUserByMethodOrThrow(method);
       return user;
-    } catch (err) {
+    } catch (err: any) {
       throw new InternalError(
         '카카오 로그인에 실패하였습니다. 다시 시도해주세요.',
         OPCODE.ERROR
