@@ -1,0 +1,21 @@
+{
+  "REQUIRED_ACCESS_KEY": "This service requires authentication.",
+  "EXPIRED_ACCESS_KEY": "Your access token has expired.",
+  "PERMISSION_DENIED": "You do not have permission. (%s)",
+  "REQUIRED_LOGIN": "This service requires a login.",
+  "INVALID_ERROR": "An unknown error has occurred.",
+  "FAILED_VALIDATE": "Please enter the correct information.",
+  "INVALID_API": "Invalid API address.",
+  "REQUIRED_LICENSE": "It can be used after license verification.",
+  "INVALID_LICENSE": "Invalid driver's license.",
+  "NOT_CONNECTED_WITH_METHOD": "This is an unconnected login method.",
+  "NOT_REGISTERED_USER": "You are not a member yet.",
+  "CANNOT_FIND_WITH_KAKAO": "Can't log in with Kakao Login.",
+  "ALREADY_CONNECT_WITH_METHOD": "This is a login method that is already linked.",
+  "CANNOT_FIND_USER": "User not found.",
+  "ALREADY_REGISTERED_USER": "You are already a registered user.",
+  "INVALID_PHONE_VALIDATE_CODE": "The verification code is incorrect.",
+  "RETRY_PHONE_VALIDATE": "Please try verifying your phone number again.",
+  "CANNOT_FIND_SESSION": "Login session does not exist.",
+  "INVALID_MESSAGING_TOKEN": "A valid message token is required."
+}
