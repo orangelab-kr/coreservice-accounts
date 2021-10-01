@@ -1,16 +1,6 @@
 import { PhoneModel, Prisma, PrismaPromise, UserModel } from '@prisma/client';
 import * as UUID from 'uuid';
-import {
-  $$$,
-  $PQ,
-  InternalError,
-  Joi,
-  License,
-  Method,
-  OPCODE,
-  Phone,
-  prisma,
-} from '..';
+import { $$$, $PQ, Joi, License, Method, Phone, prisma, RESULT } from '..';
 
 export interface PreUserModel {
   userId: string;
@@ -193,10 +183,7 @@ export class User {
 
   public static async getUserOrThrow(userId: string): Promise<UserModel> {
     const user = await this.getUser(userId);
-    if (!user) {
-      throw new InternalError('사용자를 찾을 수 없습니다.', OPCODE.NOT_FOUND);
-    }
-
+    if (!user) throw RESULT.CANNOT_FIND_USER();
     return user;
   }
 
@@ -208,10 +195,7 @@ export class User {
     phoneNo: string
   ): Promise<UserModel> {
     const user = await this.getUserByPhone(phoneNo);
-    if (!user) {
-      throw new InternalError('사용자를 찾을 수 없습니다.', OPCODE.NOT_FOUND);
-    }
-
+    if (!user) throw RESULT.CANNOT_FIND_USER();
     return user;
   }
 

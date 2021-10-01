@@ -1,13 +1,5 @@
 import { LicenseModel, Prisma, PrismaPromise, UserModel } from '@prisma/client';
-import {
-  $$$,
-  getPlatformClient,
-  InternalError,
-  Joi,
-  OPCODE,
-  PreUserModel,
-  prisma,
-} from '..';
+import { $$$, getPlatformClient, Joi, PreUserModel, prisma, RESULT } from '..';
 
 export class License {
   public static async getLicense(
@@ -24,13 +16,7 @@ export class License {
     user: UserModel
   ): Promise<LicenseModel> {
     const license = await $$$(this.getLicense(user));
-    if (!license) {
-      throw new InternalError(
-        '면허 인증 후 이용할 수 있습니다.',
-        OPCODE.NOT_FOUND
-      );
-    }
-
+    if (!license) throw RESULT.REQUIRED_LICENSE();
     return license;
   }
 
@@ -55,10 +41,7 @@ export class License {
       licenseStr,
     });
 
-    if (!isValid) {
-      throw new InternalError('올바른 운전면허가 아닙니다.', OPCODE.NOT_FOUND);
-    }
-
+    if (!isValid) throw RESULT.INVALID_LICENSE();
     return () =>
       prisma.licenseModel.create({
         data: {
@@ -95,7 +78,7 @@ export class License {
       };
 
       interface resJson {
-        opcode: OPCODE;
+        opcode: number;
         isValid: boolean;
       }
 
@@ -113,11 +96,6 @@ export class License {
     licenseStr: string;
   }): Promise<void> {
     const isValid = this.validateLicense(props);
-    if (!isValid) {
-      throw new InternalError(
-        '유효하지 않은 운전면허입니다.',
-        OPCODE.NOT_FOUND
-      );
-    }
+    if (!isValid) throw RESULT.INVALID_LICENSE();
   }
 }

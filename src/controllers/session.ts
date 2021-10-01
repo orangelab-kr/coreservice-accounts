@@ -1,6 +1,6 @@
 import { Prisma, PrismaPromise, SessionModel, UserModel } from '@prisma/client';
 import crypto from 'crypto';
-import { $$$, InternalError, OPCODE, prisma } from '..';
+import { $$$, prisma, RESULT } from '..';
 
 export class Session {
   public static async getSessions(
@@ -49,10 +49,7 @@ export class Session {
 
       return user;
     } catch (err: any) {
-      throw new InternalError(
-        '로그아웃되었습니다 다시 로그인해주세요.',
-        OPCODE.REQUIRED_LOGIN
-      );
+      throw RESULT.REQUIRED_LOGIN();
     }
   }
 
@@ -70,10 +67,7 @@ export class Session {
     sessionId: string
   ): Promise<SessionModel> {
     const session = await $$$(Session.getSession(user, sessionId));
-    if (!session) {
-      throw new InternalError('세션을 찾을 수 없습니다.', OPCODE.NOT_FOUND);
-    }
-
+    if (!session) throw RESULT.CANNOT_FIND_SESSION();
     return session;
   }
 
@@ -81,10 +75,7 @@ export class Session {
     sessionId: string,
     messagingToken: string
   ): Promise<void> {
-    if (!messagingToken) {
-      throw new InternalError('올바른 메시징 토큰이 필요합니다.');
-    }
-
+    if (!messagingToken) throw RESULT.INVALID_MESSAGING_TOKEN();
     await prisma.sessionModel.update({
       where: { sessionId },
       data: { messagingToken },

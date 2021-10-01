@@ -7,16 +7,7 @@ import {
 } from '@prisma/client';
 import dayjs from 'dayjs';
 import Joi from 'joi';
-import {
-  $$$,
-  InternalError,
-  kakao,
-  OPCODE,
-  Phone,
-  PreUserModel,
-  prisma,
-  UserInfo,
-} from '..';
+import { $$$, kakao, Phone, PreUserModel, prisma, RESULT, UserInfo } from '..';
 
 export class Method {
   public static async getMethods(
@@ -46,13 +37,7 @@ export class Method {
     showValue = false
   ): Promise<MethodModel> {
     const method = await $$$(Method.getMethod(user, provider, showValue));
-    if (!method) {
-      throw new InternalError(
-        '해당 로그인 방식과 연결되지 않았습니다.',
-        OPCODE.NOT_FOUND
-      );
-    }
-
+    if (!method) throw RESULT.NOT_CONNECTED_WITH_METHOD();
     return method;
   }
 
@@ -83,13 +68,7 @@ export class Method {
     provider: MethodProvider
   ): Promise<() => Prisma.Prisma__MethodModelClient<MethodModel>> {
     const method = await Method.getMethodOrThrow(user, provider);
-    if (!method) {
-      throw new InternalError(
-        '아직 연결하지 않은 로그인 수단입니다.',
-        OPCODE.ERROR
-      );
-    }
-
+    if (!method) throw RESULT.NOT_CONNECTED_WITH_METHOD();
     const { methodId } = method;
     return () => prisma.methodModel.delete({ where: { methodId } });
   }
@@ -121,20 +100,11 @@ export class Method {
       const type = MethodProvider.kakao;
       const { id } = await kakao.getAuthUser(accessToken);
       const method = await Method.getMethodWithValue(type, `${id}`, true);
-      if (!method) {
-        throw new InternalError(
-          '회원가입되지 않은 사용자입니다.',
-          OPCODE.NOT_FOUND
-        );
-      }
-
+      if (!method) throw RESULT.NOT_REGISTERED_USER();
       const user = await Method.getUserByMethodOrThrow(method);
       return user;
     } catch (err: any) {
-      throw new InternalError(
-        '카카오 로그인에 실패하였습니다. 다시 시도해주세요.',
-        OPCODE.ERROR
-      );
+      throw RESULT.CANNOT_FIND_WITH_KAKAO();
     }
   }
 
@@ -149,13 +119,7 @@ export class Method {
     const { userId } = user;
     const { provider, identity, description } = props;
     const method = await $$$(Method.getMethod(user, provider));
-    if (method) {
-      throw new InternalError(
-        '이미 연동된 로그인 수단입니다.',
-        OPCODE.ALREADY_EXISTS
-      );
-    }
-
+    if (method) throw RESULT.ALREADY_CONNECT_WITH_METHOD();
     return () =>
       prisma.methodModel.create({
         data: {
@@ -171,10 +135,7 @@ export class Method {
     method: MethodModel
   ): Promise<UserModel> {
     const user = await this.getUserByMethod(method);
-    if (!user) {
-      throw new InternalError('사용자를 찾을 수 없습니다.', OPCODE.NOT_FOUND);
-    }
-
+    if (!user) throw RESULT.CANNOT_FIND_USER();
     return user;
   }
 

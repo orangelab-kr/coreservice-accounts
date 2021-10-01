@@ -1,12 +1,6 @@
 import { PhoneModel, Prisma } from '@prisma/client';
 import { PhoneNumberFormat, PhoneNumberUtil } from 'google-libphonenumber';
-import {
-  InternalError,
-  Joi,
-  OPCODE,
-  prisma,
-  sendMessageWithMessageGateway,
-} from '../tools';
+import { Joi, prisma, RESULT, sendMessageWithMessageGateway } from '../tools';
 
 const phoneUtil = PhoneNumberUtil.getInstance();
 
@@ -76,12 +70,7 @@ export class Phone {
 
   public static async isUnusedPhoneNoOrThrow(phoneNo: string): Promise<void> {
     const exists = await this.isUnusedPhoneNo(phoneNo);
-    if (exists) {
-      throw new InternalError(
-        '이미 회원가입한 사용자입니다.',
-        OPCODE.ALREADY_EXISTS
-      );
-    }
+    if (exists) throw RESULT.ALREADY_REGISTERED_USER();
   }
 
   public static async verifyPhone(props: {
@@ -99,13 +88,7 @@ export class Phone {
       select: { phoneNo: true, phoneId: true, code: true },
     });
 
-    if (!phone) {
-      throw new InternalError(
-        '인증번호가 올바르지 않습니다.',
-        OPCODE.NOT_FOUND
-      );
-    }
-
+    if (!phone) throw RESULT.RETRY_PHONE_VALIDATE();
     return phone;
   }
 
@@ -128,13 +111,7 @@ export class Phone {
     verify: VerifiedPhoneInterface
   ): Promise<PhoneModel> {
     const phone = await this.getPhone(verify);
-    if (!phone) {
-      throw new InternalError(
-        '전화번호를 다시 인증해주세요.',
-        OPCODE.NOT_FOUND
-      );
-    }
-
+    if (!phone) throw RESULT.RETRY_PHONE_VALIDATE();
     return phone;
   }
 
