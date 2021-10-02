@@ -1,15 +1,13 @@
-import { Callback, InternalError, OPCODE, Session, Wrapper } from '../../..';
+import { WrapperCallback, RESULT, Session, Wrapper } from '../../..';
 
-export function InternalUserSessionMiddleware(): Callback {
+export function InternalUserSessionMiddleware(): WrapperCallback {
   return Wrapper(async (req, res, next) => {
     const {
       params: { sessionId },
       internal: { user },
     } = req;
-    if (!user || !sessionId) {
-      throw new InternalError('세션을 찾을 수 없습니다.', OPCODE.NOT_FOUND);
-    }
 
+    if (!user || !sessionId) throw RESULT.CANNOT_FIND_SESSION();
     req.internal.session = await Session.getSessionOrThrow(user, sessionId);
     await next();
   });

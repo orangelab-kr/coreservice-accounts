@@ -1,30 +1,19 @@
 import dayjs from 'dayjs';
 import jwt from 'jsonwebtoken';
-import { Callback, InternalError, Joi, logger, OPCODE, Wrapper } from '../..';
+import { WrapperCallback, Joi, logger, RESULT, Wrapper } from '../..';
 
 export * from './user';
 
-export function InternalMiddleware(): Callback {
+export function InternalMiddleware(): WrapperCallback {
   return Wrapper(async (req, res, next) => {
     const { headers, query } = req;
     const token = headers.authorization
       ? headers.authorization.substr(7)
       : query.token;
 
-    if (typeof token !== 'string') {
-      throw new InternalError(
-        '인증이 필요한 서비스입니다.',
-        OPCODE.REQUIRED_INTERNAL_LOGIN
-      );
-    }
-
+    if (typeof token !== 'string') throw RESULT.REQUIRED_ACCESS_KEY();
     const key = process.env.HIKICK_CORESERVICE_ACCOUNTS_KEY;
-    if (!key || !token) {
-      throw new InternalError(
-        '인증이 필요한 서비스입니다.',
-        OPCODE.REQUIRED_INTERNAL_LOGIN
-      );
-    }
+    if (!key || !token) throw RESULT.REQUIRED_ACCESS_KEY();
 
     try {
       const data = jwt.verify(token, key);
@@ -51,10 +40,7 @@ export function InternalMiddleware(): Callback {
         logger.error(err.stack);
       }
 
-      throw new InternalError(
-        '인증이 필요한 서비스입니다.',
-        OPCODE.REQUIRED_INTERNAL_LOGIN
-      );
+      throw RESULT.REQUIRED_ACCESS_KEY();
     }
 
     await next();
