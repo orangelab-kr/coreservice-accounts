@@ -12,6 +12,7 @@ export function LoggerMiddleware(): WrapperCallback {
       req.connection.remoteAddress ||
       req.socket.remoteAddress;
 
+    if (!ipAddress) return next();
     res.on('finish', () => {
       const statusCode = res.statusCode;
       const contentLength = `${res.getHeader('content-length') || 0}B`;
@@ -31,6 +32,6 @@ export function LoggerMiddleware(): WrapperCallback {
       }
     });
 
-    await next();
+    next();
   });
 }

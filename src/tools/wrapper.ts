@@ -8,6 +8,7 @@ i18n.configure({
   defaultLocale: 'en',
   locales: ['en', 'ko'],
   directory: 'locales',
+  updateFiles: false,
 });
 
 export type WrapperCallback = (
