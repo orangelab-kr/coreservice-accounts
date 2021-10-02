@@ -7,7 +7,15 @@ export function getLicenseRouter(): Router {
   router.get(
     '/',
     Wrapper(async (req) => {
-      const license = await $$$(License.getLicense(req.user));
+      const {
+        user,
+        query: { orThrow },
+      } = req;
+
+      const license = orThrow
+        ? await License.getLicenseOrThrow(user)
+        : await $$$(License.getLicense(user));
+
       throw RESULT.SUCCESS({ details: { license } });
     })
   );

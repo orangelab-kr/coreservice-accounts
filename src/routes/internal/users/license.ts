@@ -7,8 +7,15 @@ export function getInternalUsersLicenseRouter(): Router {
   router.get(
     '/',
     Wrapper(async (req) => {
-      const { user } = req.internal;
-      const license = await $$$(License.getLicense(user));
+      const {
+        internal: { user },
+        query: { orThrow },
+      } = req;
+
+      const license = orThrow
+        ? await License.getLicenseOrThrow(user)
+        : await $$$(License.getLicense(user));
+
       throw RESULT.SUCCESS({ details: { license } });
     })
   );
