@@ -5,14 +5,14 @@ import {
   getInternalUsersSessionsRouter,
   InternalUserBySessionMiddleware,
   InternalUserMiddleware,
-  OPCODE,
+  RESULT,
   User,
   Wrapper,
 } from '../../..';
 
 export * from './license';
-export * from './sessions';
 export * from './methods';
+export * from './sessions';
 
 export function getInternalUsersRouter(): Router {
   const router = Router();
@@ -35,38 +35,38 @@ export function getInternalUsersRouter(): Router {
     getInternalUsersSessionsRouter()
   );
 
-  router.get(
-    '/',
-    Wrapper(async (req, res) => {
-      const { total, users } = await User.getUsers(req.query);
-      res.json({ opcode: OPCODE.SUCCESS, users, total });
-    })
-  );
-
-  router.get(
-    '/:userId',
-    InternalUserMiddleware(),
-    Wrapper(async (req, res) => {
-      const { user } = req.internal;
-      res.json({ opcode: OPCODE.SUCCESS, user });
-    })
-  );
-
-  router.post(
-    '/:userId',
-    InternalUserMiddleware(),
-    Wrapper(async (req, res) => {
-      const user = await User.modifyUser(req.internal.user, req.body);
-      res.json({ opcode: OPCODE.SUCCESS, user });
-    })
-  );
-
   router.post(
     '/authorize',
     InternalUserBySessionMiddleware(),
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const { user } = req.internal;
-      res.json({ opcode: OPCODE.SUCCESS, user });
+      throw RESULT.SUCCESS({ details: { user } });
+    })
+  );
+
+  router.get(
+    '/',
+    Wrapper(async (req) => {
+      const { total, users } = await User.getUsers(req.query);
+      throw RESULT.SUCCESS({ details: { users, total } });
+    })
+  );
+
+  router.get(
+    '/:userId',
+    InternalUserMiddleware(),
+    Wrapper(async (req) => {
+      const { user } = req.internal;
+      throw RESULT.SUCCESS({ details: { user } });
+    })
+  );
+
+  router.post(
+    '/:userId',
+    InternalUserMiddleware(),
+    Wrapper(async (req) => {
+      const user = await User.modifyUser(req.internal.user, req.body);
+      throw RESULT.SUCCESS({ details: { user } });
     })
   );
 

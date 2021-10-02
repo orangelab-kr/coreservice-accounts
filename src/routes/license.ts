@@ -1,35 +1,35 @@
 import { Router } from 'express';
-import { $$$, License, OPCODE, Wrapper } from '..';
+import { $$$, License, RESULT, Wrapper } from '..';
 
 export function getLicenseRouter(): Router {
   const router = Router();
 
   router.get(
     '/',
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const license = await $$$(License.getLicense(req.user));
-      res.json({ opcode: OPCODE.SUCCESS, license });
+      throw RESULT.SUCCESS({ details: { license } });
     })
   );
 
   router.post(
     '/',
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const { licenseStr } = req.body;
       await $$$([
         License.deleteLicense(req.user),
         License.setLicense(req.user, licenseStr),
       ]);
 
-      res.json({ opcode: OPCODE.SUCCESS });
+      throw RESULT.SUCCESS();
     })
   );
 
   router.delete(
     '/',
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       await $$$(License.deleteLicense(req.user));
-      res.json({ opcode: OPCODE.SUCCESS });
+      throw RESULT.SUCCESS();
     })
   );
 

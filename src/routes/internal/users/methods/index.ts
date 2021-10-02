@@ -4,7 +4,7 @@ import {
   getInternalUsersMethodsKakaoRouter,
   getInternalUsersMethodsPhoneRouter,
   Method,
-  OPCODE,
+  RESULT,
   Wrapper,
 } from '../../../..';
 
@@ -19,9 +19,9 @@ export function getInternalUsersMethodsRouter(): Router {
 
   router.get(
     '/',
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const methods = await $$$(Method.getMethods(req.internal.user, false));
-      res.json({ opcode: OPCODE.SUCCESS, methods });
+      throw RESULT.SUCCESS({ details: { methods } });
     })
   );
 

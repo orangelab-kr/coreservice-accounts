@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { OPCODE, Phone, Wrapper } from '../..';
+import { Phone, RESULT, Wrapper } from '../..';
 
 export function getMethodsPhoneRouter(): Router {
   const router = Router();
@@ -7,10 +7,9 @@ export function getMethodsPhoneRouter(): Router {
   router.get(
     '/verify',
     Wrapper(async (req, res) => {
-      console.log(req.query.phoneNo);
       const phoneNo = String(req.query.phoneNo);
       await Phone.sendVerify(phoneNo);
-      res.json({ opcode: OPCODE.SUCCESS });
+      throw RESULT.SUCCESS();
     })
   );
 
@@ -18,7 +17,7 @@ export function getMethodsPhoneRouter(): Router {
     '/verify',
     Wrapper(async (req, res) => {
       const phone = await Phone.verifyPhone(req.body);
-      res.json({ opcode: OPCODE.SUCCESS, phone });
+      throw RESULT.SUCCESS({ details: { phone } });
     })
   );
 

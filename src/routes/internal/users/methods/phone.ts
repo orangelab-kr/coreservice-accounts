@@ -1,24 +1,23 @@
 import { Router } from 'express';
-import { OPCODE, Phone, Wrapper } from '../../../..';
+import { Phone, RESULT, Wrapper } from '../../../..';
 
 export function getInternalUsersMethodsPhoneRouter(): Router {
   const router = Router();
 
   router.get(
     '/verify',
-    Wrapper(async (req, res) => {
-      console.log(req.query.phoneNo);
+    Wrapper(async (req) => {
       const phoneNo = String(req.query.phoneNo);
       await Phone.sendVerify(phoneNo);
-      res.json({ opcode: OPCODE.SUCCESS });
+      throw RESULT.SUCCESS();
     })
   );
 
   router.post(
     '/verify',
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const phone = await Phone.verifyPhone(req.body);
-      res.json({ opcode: OPCODE.SUCCESS, phone });
+      throw RESULT.SUCCESS({ details: { phone } });
     })
   );
 

@@ -1,6 +1,6 @@
 import { MethodProvider } from '@prisma/client';
 import { Router } from 'express';
-import { $$$, kakao, Method, OPCODE, Wrapper } from '../../../..';
+import { $$$, kakao, Method, RESULT, Wrapper } from '../../../..';
 
 const provider = MethodProvider.kakao;
 
@@ -9,61 +9,61 @@ export function getInternalUsersMethodsKakaoRouter(): Router {
 
   router.get(
     '/',
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const method = await Method.getMethodOrThrow(req.internal.user, provider);
-      res.json({ opcode: OPCODE.SUCCESS, method });
+      throw RESULT.SUCCESS({ details: { method } });
     })
   );
 
   router.post(
     '/',
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const method = await $$$(
         Method.connectKakaoMethod(req.internal.user, req.body.accessToken)
       );
 
-      res.json({ opcode: OPCODE.SUCCESS, method });
+      throw RESULT.SUCCESS({ details: { method } });
     })
   );
 
   router.delete(
     '/',
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       await $$$(Method.disconnectMethod(req.internal.user, provider));
-      res.json({ opcode: OPCODE.SUCCESS });
+      throw RESULT.SUCCESS();
     })
   );
 
   router.get(
     '/accessToken',
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const token = String(req.query.token);
       const { accessToken } = await kakao.getAccessTokenResponse(token);
-      res.json({ opcode: OPCODE.SUCCESS, accessToken });
+      throw RESULT.SUCCESS({ details: { accessToken } });
     })
   );
 
   router.post(
     '/info',
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const userInfo = await Method.getUserInfoByKakao(req.body);
-      res.json({ opcode: OPCODE.SUCCESS, userInfo });
+      throw RESULT.SUCCESS({ details: { userInfo } });
     })
   );
 
   router.get(
     '/url',
-    Wrapper(async (req, res) => {
+    Wrapper(async () => {
       const url = await kakao.getAuthRequestUri();
-      res.json({ opcode: OPCODE.SUCCESS, url });
+      throw RESULT.SUCCESS({ details: { url } });
     })
   );
 
   router.post(
     '/info',
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const userInfo = await Method.getUserInfoByKakao(req.body);
-      res.json({ opcode: OPCODE.SUCCESS, userInfo });
+      throw RESULT.SUCCESS({ details: { userInfo } });
     })
   );
 

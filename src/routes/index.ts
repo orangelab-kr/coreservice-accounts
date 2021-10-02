@@ -7,7 +7,7 @@ import {
   getLicenseRouter,
   getMethodsRouter,
   InternalMiddleware,
-  OPCODE,
+  RESULT,
   UserMiddleware,
   Wrapper,
 } from '..';
@@ -27,11 +27,8 @@ export function getRouter(): Router {
   router.use('/internal', InternalMiddleware(), getInternalRouter());
   router.get(
     '/',
-    Wrapper(async (_req, res) => {
-      res.json({
-        opcode: OPCODE.SUCCESS,
-        ...clusterInfo,
-      });
+    Wrapper(async () => {
+      throw RESULT.SUCCESS({ details: clusterInfo });
     })
   );
 

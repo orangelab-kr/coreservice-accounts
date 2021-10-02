@@ -1,28 +1,28 @@
 import { Router } from 'express';
-import { $$$, User, Method, OPCODE, Phone, Session, Wrapper } from '../..';
+import { $$$, Method, Phone, RESULT, Session, User, Wrapper } from '../..';
 
 export function getAuthLoginRouter(): Router {
   const router = Router();
 
   router.post(
     '/phone',
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const userAgent = req.headers['user-agent'];
       const phoneObj = await Phone.getPhoneOrThrow(req.body.phone);
       const user = await User.getUserByPhoneOrThrow(phoneObj.phoneNo);
       const sessionId = await Session.createSession(user, userAgent);
-      res.json({ opcode: OPCODE.SUCCESS, sessionId, user });
       await $$$(Phone.revokePhone(phoneObj));
+      throw RESULT.SUCCESS({ details: { sessionId, user } });
     })
   );
 
   router.post(
     '/kakao',
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const userAgent = req.headers['user-agent'];
       const user = await Method.loginWithKakao(req.body.accessToken);
       const sessionId = await Session.createSession(user, userAgent);
-      res.json({ opcode: OPCODE.SUCCESS, sessionId, user });
+      throw RESULT.SUCCESS({ details: { sessionId, user } });
     })
   );
 

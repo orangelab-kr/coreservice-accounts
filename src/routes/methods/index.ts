@@ -4,7 +4,7 @@ import {
   getMethodsKakaoRouter,
   getMethodsPhoneRouter,
   Method,
-  OPCODE,
+  RESULT,
   UserMiddleware,
   Wrapper,
 } from '../..';
@@ -20,9 +20,9 @@ export function getMethodsRouter(): Router {
   router.get(
     '/',
     UserMiddleware(),
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const methods = await $$$(Method.getMethods(req.user, false));
-      res.json({ opcode: OPCODE.SUCCESS, methods });
+      throw RESULT.SUCCESS({ details: { methods } });
     })
   );
 

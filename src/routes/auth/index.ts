@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import {
   getAuthLoginRouter,
-  OPCODE,
+  RESULT,
   Session,
   User,
   UserMiddleware,
@@ -17,38 +17,38 @@ export function getAuthRouter(): Router {
   router.get(
     '/',
     UserMiddleware(),
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const { user } = req;
-      res.json({ opcode: OPCODE.SUCCESS, user });
+      throw RESULT.SUCCESS({ details: { user } });
     })
   );
 
   router.post(
     '/',
     UserMiddleware(),
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const user = await User.modifyUser(req.user, req.body);
-      res.json({ opcode: OPCODE.SUCCESS, user });
+      throw RESULT.SUCCESS({ details: { user } });
     })
   );
 
   router.post(
     '/signup',
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const userAgent = req.headers['user-agent'];
       const user = await User.signupUser(req.body);
       const sessionId = await Session.createSession(user, userAgent);
-      res.json({ opcode: OPCODE.SUCCESS, sessionId, user });
+      throw RESULT.SUCCESS({ details: { sessionId, user } });
     })
   );
 
   router.get(
     '/messaging',
     UserMiddleware(),
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const { sessionId, query } = req;
       await Session.setMessagingToken(sessionId, String(query.token));
-      res.json({ opcode: OPCODE.SUCCESS });
+      throw RESULT.SUCCESS();
     })
   );
 
