@@ -1,7 +1,8 @@
 import dayjs from 'dayjs';
 import jwt from 'jsonwebtoken';
-import { WrapperCallback, Joi, logger, RESULT, Wrapper } from '../..';
+import { Joi, logger, RESULT, Wrapper, WrapperCallback } from '../..';
 
+export * from './passProgram';
 export * from './user';
 
 export function InternalMiddleware(): WrapperCallback {
@@ -43,6 +44,6 @@ export function InternalMiddleware(): WrapperCallback {
       throw RESULT.REQUIRED_ACCESS_KEY();
     }
 
-    await next();
+    next();
   });
 }

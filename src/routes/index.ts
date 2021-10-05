@@ -11,6 +11,7 @@ import {
   UserMiddleware,
   Wrapper,
 } from '..';
+import { getPassProgramsRouter } from './passPrograms';
 
 export * from './auth';
 export * from './internal';
@@ -24,6 +25,7 @@ export function getRouter(): Router {
   router.use('/login', getAuthLoginRouter());
   router.use('/methods', getMethodsRouter());
   router.use('/license', UserMiddleware(), getLicenseRouter());
+  router.use('/passPrograms', UserMiddleware(), getPassProgramsRouter());
   router.use('/internal', InternalMiddleware(), getInternalRouter());
   router.get(
     '/',

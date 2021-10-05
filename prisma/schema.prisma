@@ -26,6 +26,7 @@ model UserModel {
 
   methods  MethodModel[]
   sessions SessionModel[]
+  passes   PassModel[]
 
   usedAt    DateTime  @default(now())
   createdAt DateTime  @default(now())
@@ -83,6 +84,43 @@ model LicenseModel {
   realname   String?
   birthday   DateTime
   licenseStr String?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+model PassProgramModel {
+  passProgramId String @id @default(uuid())
+
+  name        String
+  description String @default("")
+
+  isSale        Boolean // 판매 상품인가?
+  couponGroupId String? // 쿠폰 그룹 ID
+  validity      Int? // 만료일
+
+  allowRenew Boolean // 연장 가능 여부
+  price      Int? // 판매 금액
+
+  passes PassModel[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+model PassModel {
+  passId String @id @default(uuid())
+
+  userId String
+  user   UserModel @relation(fields: [userId], references: [userId])
+
+  autoRenew Boolean
+  expiredAt DateTime?
+
+  passProgramId String
+  passProgram   PassProgramModel @relation(fields: [passProgramId], references: [passProgramId])
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

@@ -6,7 +6,6 @@
   "INVALID_ERROR": "알 수 없는 오류가 발생하였습니다.",
   "FAILED_VALIDATE": "올바른 정보를 입력해주세요.",
   "INVALID_API": "잘못된 API 주소입니다.",
-  "REQUIRED_LICENSE": "면허 인증 후 이용할 수 있습니다.",
   "INVALID_LICENSE": "유효하지 않은 운전면허입니다.",
   "NOT_CONNECTED_WITH_METHOD": "연결되지 않은 로그인 방식입니다.",
   "NOT_REGISTERED_USER": "아직 회원가입하지 않은 사용자입니다.",
@@ -17,5 +16,9 @@
   "INVALID_PHONE_VALIDATE_CODE": "인증번호가 올바르지 않습니다.",
   "RETRY_PHONE_VALIDATE": "전화번호 인증을 다시 시도해주세요.",
   "CANNOT_FIND_SESSION": "로그인 세션이 존재하지 않습니다.",
-  "INVALID_MESSAGING_TOKEN": "올바른 메세지 토큰이 필요합니다."
+  "INVALID_MESSAGING_TOKEN": "올바른 메세지 토큰이 필요합니다.",
+  "REQUIRED_LICENSE": "면허 인증 후 이용할 수 있습니다.",
+  "CANNOT_FIND_PASS_GROUP": "패스 프로그램이 존재하지 않습니다.",
+  "CANNOT_FIND_PASS": "패스가 존재하지 않습니다.",
+  "PASS_PROGRAM_HAS_USING": "패스 프로그램은 %n개의 패스가 있습니다."
 }

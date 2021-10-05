@@ -6,7 +6,6 @@
   "INVALID_ERROR": "An unknown error has occurred.",
   "FAILED_VALIDATE": "Please enter the correct information.",
   "INVALID_API": "Invalid API address.",
-  "REQUIRED_LICENSE": "It can be used after license verification.",
   "INVALID_LICENSE": "Invalid driver's license.",
   "NOT_CONNECTED_WITH_METHOD": "This is an unconnected login method.",
   "NOT_REGISTERED_USER": "You are not a member yet.",
@@ -17,5 +16,9 @@
   "INVALID_PHONE_VALIDATE_CODE": "The verification code is incorrect.",
   "RETRY_PHONE_VALIDATE": "Please try verifying your phone number again.",
   "CANNOT_FIND_SESSION": "Login session does not exist.",
-  "INVALID_MESSAGING_TOKEN": "A valid message token is required."
+  "INVALID_MESSAGING_TOKEN": "A valid message token is required.",
+  "REQUIRED_LICENSE": "It can be used after license verification.",
+  "CANNOT_FIND_PASS_GROUP": "The pass program does not exist.",
+  "CANNOT_FIND_PASS": "The pass does not exist.",
+  "PASS_PROGRAM_HAS_USING": "The pass program still has %s passes."
 }
