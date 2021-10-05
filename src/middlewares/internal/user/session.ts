@@ -9,6 +9,6 @@ export function InternalUserSessionMiddleware(): WrapperCallback {
 
     if (!user || !sessionId) throw RESULT.CANNOT_FIND_SESSION();
     req.internal.session = await Session.getSessionOrThrow(user, sessionId);
-    await next();
+    next();
   });
 }

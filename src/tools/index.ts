@@ -1,4 +1,5 @@
 export * from './clusterInfo';
+export * from './coreservice';
 export * from './database';
 export * from './joi';
 export * from './kakao';

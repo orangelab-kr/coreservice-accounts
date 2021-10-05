@@ -10,7 +10,7 @@ export function InternalUserBySessionMiddleware(): WrapperCallback {
     req.internal.sessionId = sessionId;
     req.internal.user = user;
 
-    await next();
+    next();
   });
 }
 
@@ -21,6 +21,6 @@ export function InternalUserMiddleware(): WrapperCallback {
     const user = await User.getUserOrThrow(userId);
     req.internal.user = user;
 
-    await next();
+    next();
   });
 }

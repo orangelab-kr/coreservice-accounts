@@ -9,6 +9,6 @@ export function UserMiddleware(): WrapperCallback {
     req.sessionId = sessionId;
     req.user = user;
 
-    await next();
+    next();
   });
 }

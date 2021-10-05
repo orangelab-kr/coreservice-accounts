@@ -9,6 +9,6 @@ export function PromiseMiddleware(
       callbacks.map((callback) => promisify(callback)(req, res))
     );
 
-    await next();
+    next();
   });
 }
