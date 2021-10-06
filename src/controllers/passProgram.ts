@@ -1,4 +1,5 @@
-import { PassProgramModel, Prisma } from '@prisma/client';
+import { PassProgramModel, Prisma, UserModel } from '@prisma/client';
+import { Pass } from '.';
 import { $$$, getPaymentsClient, Joi, prisma, RESULT } from '..';
 
 export class PassProgram {
@@ -160,5 +161,33 @@ export class PassProgram {
           price,
         },
       });
+  }
+
+  public static async purchasePassProgram(
+    user: UserModel,
+    passProgram: PassProgramModel,
+    props: { autoRenew: boolean }
+  ): Promise<any> {
+    const { userId } = user;
+    const { passProgramId, isSale, price, name } = passProgram;
+    const { autoRenew } = await Joi.object({
+      autoRenew: Joi.boolean().required(),
+    }).validateAsync(props);
+    if (!isSale) throw RESULT.PASS_PROGRAM_IS_NOT_SALE();
+    const passId = await Pass.generatePassId();
+    if (price && price > 0) {
+      const json = {
+        userId,
+        name: `패스 / ${name} (구매)`,
+        properties: { coreservice: { passId, passProgramId } },
+        amount: price,
+        required: true,
+      };
+
+      await getPaymentsClient().post(`records`, { json }).json();
+    }
+
+    const options = { passId, autoRenew };
+    return Pass.createPass(user, passProgram, options);
   }
 }

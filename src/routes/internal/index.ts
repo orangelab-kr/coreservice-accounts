@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { getInternalPassProgramsRouter, getInternalUsersRouter } from '..';
 
+export * from './users';
 export * from './passPrograms';
 export * from './users';
 

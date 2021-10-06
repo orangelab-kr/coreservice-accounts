@@ -2,6 +2,7 @@ import dayjs from 'dayjs';
 import jwt from 'jsonwebtoken';
 import { Joi, logger, RESULT, Wrapper, WrapperCallback } from '../..';
 
+export * from './pass';
 export * from './passProgram';
 export * from './user';
 

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { PassProgram, PassProgramMiddleware, RESULT, Wrapper } from '..';
+import { $$$, PassProgram, PassProgramMiddleware, RESULT, Wrapper } from '..';
 
 export function getPassProgramsRouter(): Router {
   const router = Router();
@@ -28,8 +28,12 @@ export function getPassProgramsRouter(): Router {
     '/:passProgramId/purchase',
     PassProgramMiddleware(),
     Wrapper(async (req) => {
-      const { passProgram } = req;
-      throw RESULT.SUCCESS({ details: { passProgram } });
+      const { passProgram, user, body } = req;
+      const pass = await $$$(
+        PassProgram.purchasePassProgram(user, passProgram, body)
+      );
+
+      throw RESULT.SUCCESS({ details: { pass } });
     })
   );
 

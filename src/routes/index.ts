@@ -6,17 +6,20 @@ import {
   getInternalRouter,
   getLicenseRouter,
   getMethodsRouter,
+  getPassesRouter,
+  getPassProgramsRouter,
   InternalMiddleware,
   RESULT,
   UserMiddleware,
   Wrapper,
 } from '..';
-import { getPassProgramsRouter } from './passPrograms';
 
 export * from './auth';
 export * from './internal';
 export * from './license';
 export * from './methods';
+export * from './passes';
+export * from './passPrograms';
 
 export function getRouter(): Router {
   const router = Router();
@@ -24,6 +27,7 @@ export function getRouter(): Router {
   router.use('/auth', getAuthRouter());
   router.use('/login', getAuthLoginRouter());
   router.use('/methods', getMethodsRouter());
+  router.use('/passes', UserMiddleware(), getPassesRouter());
   router.use('/license', UserMiddleware(), getLicenseRouter());
   router.use('/passPrograms', UserMiddleware(), getPassProgramsRouter());
   router.use('/internal', InternalMiddleware(), getInternalRouter());

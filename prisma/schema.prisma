@@ -116,8 +116,10 @@ model PassModel {
   userId String
   user   UserModel @relation(fields: [userId], references: [userId])
 
-  autoRenew Boolean
-  expiredAt DateTime?
+  autoRenew     Boolean
+  couponId      String?
+  couponGroupId String?
+  expiredAt     DateTime?
 
   passProgramId String
   passProgram   PassProgramModel @relation(fields: [passProgramId], references: [passProgramId])

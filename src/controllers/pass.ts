@@ -1,6 +1,31 @@
-import { PassProgramModel, PassModel, Prisma, UserModel } from '@prisma/client';
+import { PassModel, PassProgramModel, Prisma, UserModel } from '@prisma/client';
 import dayjs from 'dayjs';
-import { $$$, Joi, prisma, RESULT } from '..';
+import { v1 } from 'uuid';
+import { $$$, getPaymentsClient, Joi, prisma, RESULT } from '..';
+
+export interface CouponModel {
+  couponId: string;
+  userId: string;
+  couponGroupId: string;
+  couponGroup: CouponGroupModel;
+  usedAt: null;
+  expiredAt: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: null;
+}
+
+export interface CouponGroupModel {
+  couponGroupId: string;
+  type: 'ONETIME' | 'LONGTIME';
+  name: string;
+  description: string;
+  validity: number;
+  limit: number;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: null;
+}
 
 export class Pass {
   public static readonly defaultInclude: Prisma.PassModelInclude = {
@@ -81,18 +106,47 @@ export class Pass {
     return { total, passes };
   }
 
-  public static async assignmentPassProgram(
+  private static async generateCoupon(
+    user: UserModel,
+    couponGroupId: string
+  ): Promise<CouponModel> {
+    const { userId } = user;
+    const { coupon } = await getPaymentsClient()
+      .post(`users/${userId}/coupons`, { json: { couponGroupId } })
+      .json<{ opcode: number; coupon: CouponModel }>();
+
+    return coupon;
+  }
+
+  private static async deleteCoupon(
+    user: UserModel,
+    couponId: string
+  ): Promise<void> {
+    const { userId } = user;
+    await getPaymentsClient()
+      .delete(`users/${userId}/coupons/${couponId}`)
+      .json<{ opcode: number }>();
+  }
+
+  public static async createPass(
     user: UserModel,
     passProgram: PassProgramModel,
-    props: { autoRenew: boolean }
+    props: { passId?: string; autoRenew: boolean }
   ): Promise<() => Prisma.Prisma__PassModelClient<PassModel>> {
-    const { autoRenew } = await Joi.object({
-      autoRenew: Joi.boolean().required(),
-    }).validateAsync(props);
+    let couponId;
     const { userId } = user;
-    const { passProgramId, validity } = passProgram;
+    const { passId, autoRenew } = props;
+    const { passProgramId, validity, couponGroupId } = passProgram;
+    if (couponGroupId) {
+      const coupon = await Pass.generateCoupon(user, couponGroupId);
+      couponId = coupon.couponId;
+    }
+
     const data: Prisma.PassModelUncheckedCreateInput = {
+      passId,
       userId,
+      couponGroupId,
+      couponId,
       passProgramId,
       autoRenew,
     };
@@ -102,9 +156,75 @@ export class Pass {
     return () => prisma.passModel.create({ data, include });
   }
 
-  // public static async purchasePassProgram(
-  //   user: UserModel,
-  //   passProgram: PassProgramModel,
-  //   props: { autoRenew }
-  // ): Promise<void> {}
+  public static async extendPass(
+    user: UserModel,
+    pass: PassModel & { passProgram?: PassProgramModel },
+    free = false
+  ): Promise<() => Prisma.Prisma__PassModelClient<PassModel>> {
+    const { userId } = user;
+    const { passId, passProgram, couponId } = pass;
+    if (!passProgram) throw RESULT.INVALID_ERROR();
+    const { name, price, passProgramId, couponGroupId } = passProgram;
+    if (!passProgram.isSale) throw RESULT.PASS_PROGRAM_IS_NOT_SALE();
+    if (!free && price && price > 0) {
+      const json = {
+        userId,
+        name: `패스 / ${name} (연장)`,
+        properties: { coreservice: { passId, passProgramId } },
+        amount: price,
+        required: true,
+      };
+
+      await getPaymentsClient().post(`records`, { json }).json();
+    }
+
+    const expiredAt = Pass.caclulateExpiredAt(pass);
+    const data: Prisma.PassModelUpdateInput = { expiredAt };
+    if (couponId) await Pass.deleteCoupon(user, couponId).catch(() => null);
+    if (couponGroupId) {
+      const { couponId } = await Pass.generateCoupon(user, couponGroupId);
+      data.couponGroupId = couponGroupId;
+      data.couponId = couponId;
+    }
+
+    const where = { passId };
+    const include = Pass.defaultInclude;
+    return () => prisma.passModel.update({ where, data, include });
+  }
+
+  public static async modifyPass(
+    pass: PassModel,
+    props: { autoRenew?: boolean }
+  ): Promise<() => Prisma.Prisma__PassModelClient<PassModel>> {
+    const { passId } = pass;
+    const where = { passId };
+    const data = await Joi.object({
+      autoRenew: Joi.boolean().optional(),
+    }).validateAsync(props);
+    const include = Pass.defaultInclude;
+    return () => prisma.passModel.update({ where, data, include });
+  }
+
+  private static caclulateExpiredAt(
+    pass: PassModel & { passProgram?: PassProgramModel }
+  ): Date | null {
+    if (!pass.passProgram) throw RESULT.INVALID_ERROR();
+    const { validity } = pass.passProgram;
+    if (!validity) return null;
+    const expiredAt = dayjs(pass.expiredAt);
+    return pass.expiredAt && expiredAt.isBefore(dayjs())
+      ? dayjs().add(validity, 'ms').toDate()
+      : expiredAt.add(validity, 'ms').toDate();
+  }
+
+  public static async generatePassId(): Promise<string> {
+    let passId;
+    while (true) {
+      passId = v1();
+      const pass = await prisma.passModel.findFirst({ where: { passId } });
+      if (!pass) break;
+    }
+
+    return passId;
+  }
 }

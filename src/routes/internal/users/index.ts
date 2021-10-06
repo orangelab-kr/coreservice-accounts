@@ -2,6 +2,7 @@ import { Router } from 'express';
 import {
   getInternalUsersLicenseRouter,
   getInternalUsersMethodsRouter,
+  getInternalUsersPassesRouter,
   getInternalUsersSessionsRouter,
   InternalUserBySessionMiddleware,
   InternalUserMiddleware,
@@ -12,6 +13,7 @@ import {
 
 export * from './license';
 export * from './methods';
+export * from './passes';
 export * from './sessions';
 
 export function getInternalUsersRouter(): Router {
@@ -33,6 +35,12 @@ export function getInternalUsersRouter(): Router {
     '/:userId/sessions',
     InternalUserMiddleware(),
     getInternalUsersSessionsRouter()
+  );
+
+  router.use(
+    '/:userId/passes',
+    InternalUserMiddleware(),
+    getInternalUsersPassesRouter()
   );
 
   router.post(

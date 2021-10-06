@@ -20,5 +20,7 @@
   "REQUIRED_LICENSE": "It can be used after license verification.",
   "CANNOT_FIND_PASS_GROUP": "The pass program does not exist.",
   "CANNOT_FIND_PASS": "The pass does not exist.",
-  "PASS_PROGRAM_HAS_USING": "The pass program still has %s passes."
+  "PASS_PROGRAM_HAS_USING": "The pass program still has %s passes.",
+  "PASS_PROGRAM_IS_NOT_SALE": "This pass has been discontinued.",
+  "PASS_PROGRAM_DISALLOWED_RENEW": "This pass cannot be extended."
 }
