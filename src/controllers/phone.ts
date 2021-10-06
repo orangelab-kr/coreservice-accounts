@@ -11,14 +11,17 @@ export interface VerifiedPhoneInterface {
 }
 
 export class Phone {
-  public static async sendVerify(
-    phoneNo: string
-  ): Promise<VerifiedPhoneInterface> {
-    phoneNo = phoneUtil.format(
+  public static getFormattedPhone(phoneNo: string): string {
+    return phoneUtil.format(
       phoneUtil.parse(phoneNo, 'KR'),
       PhoneNumberFormat.E164
     );
+  }
 
+  public static async sendVerify(
+    phoneNo: string
+  ): Promise<VerifiedPhoneInterface> {
+    phoneNo = Phone.getFormattedPhone(phoneNo);
     const code = Phone.generateRandomCode();
     await Phone.revokeVerify(phoneNo);
     await sendMessageWithMessageGateway({
@@ -32,7 +35,6 @@ export class Phone {
       select: { phoneId: true, phoneNo: true, code: true },
     });
 
-    console.log(phone);
     return phone;
   }
 
@@ -52,11 +54,7 @@ export class Phone {
   public static async createPhone(
     phoneNo: string
   ): Promise<VerifiedPhoneInterface> {
-    phoneNo = phoneUtil.format(
-      phoneUtil.parse(phoneNo, 'KR'),
-      PhoneNumberFormat.E164
-    );
-
+    phoneNo = Phone.getFormattedPhone(phoneNo);
     return prisma.phoneModel.create({
       data: { phoneNo },
       select: { phoneId: true, phoneNo: true, code: true },

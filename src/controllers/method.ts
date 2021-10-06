@@ -7,7 +7,16 @@ import {
 } from '@prisma/client';
 import dayjs from 'dayjs';
 import Joi from 'joi';
-import { $$$, kakao, Phone, PreUserModel, prisma, RESULT, UserInfo } from '..';
+import {
+  $$$,
+  kakao,
+  Phone,
+  PreUserModel,
+  prisma,
+  RESULT,
+  User,
+  UserInfo,
+} from '..';
 
 export class Method {
   public static async getMethods(
@@ -96,16 +105,15 @@ export class Method {
   }
 
   public static async loginWithKakao(accessToken: string): Promise<UserModel> {
-    try {
-      const type = MethodProvider.kakao;
-      const { id } = await kakao.getAuthUser(accessToken);
-      const method = await Method.getMethodWithValue(type, `${id}`, true);
-      if (!method) throw RESULT.NOT_REGISTERED_USER();
-      const user = await Method.getUserByMethodOrThrow(method);
-      return user;
-    } catch (err: any) {
-      throw RESULT.CANNOT_FIND_WITH_KAKAO();
-    }
+    const type = MethodProvider.kakao;
+    const { id, raw } = await kakao.getAuthUser(accessToken);
+    const method = await Method.getMethodWithValue(type, `${id}`, true);
+    if (method) return Method.getUserByMethodOrThrow(method);
+    const phoneNo = Phone.getFormattedPhone(raw.kakao_account.phone_number);
+    const user = await User.getUserByPhoneOrThrow(phoneNo);
+    if (!user) throw RESULT.NOT_REGISTERED_USER();
+    await $$$(Method.connectKakaoMethod(user, accessToken));
+    return user;
   }
 
   public static async connectMethod(
