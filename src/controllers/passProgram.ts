@@ -1,6 +1,6 @@
 import { PassProgramModel, Prisma, UserModel } from '@prisma/client';
 import { Pass } from '.';
-import { $$$, getPaymentsClient, Joi, prisma, RESULT } from '..';
+import { $$$, getCoreServiceClient, Joi, prisma, RESULT } from '..';
 
 export class PassProgram {
   public static async getPassProgram(
@@ -97,7 +97,9 @@ export class PassProgram {
       price: Joi.number().allow(null).optional(),
     }).validateAsync(props);
     if (couponGroupId) {
-      await getPaymentsClient().get(`couponGroups/${couponGroupId}`).json();
+      await getCoreServiceClient('payments')
+        .get(`couponGroups/${couponGroupId}`)
+        .json();
     }
 
     return () =>
@@ -145,7 +147,9 @@ export class PassProgram {
       price: Joi.number().allow(null).optional(),
     }).validateAsync(props);
     if (couponGroupId && passProgram.couponGroupId !== couponGroupId) {
-      await getPaymentsClient().get(`couponGroups/${couponGroupId}`).json();
+      await getCoreServiceClient('payments')
+        .get(`couponGroups/${couponGroupId}`)
+        .json();
     }
 
     return () =>
@@ -184,7 +188,7 @@ export class PassProgram {
         required: true,
       };
 
-      await getPaymentsClient().post(`records`, { json }).json();
+      await getCoreServiceClient('payments').post(`records`, { json }).json();
     }
 
     const options = { passId, autoRenew };

@@ -1,7 +1,7 @@
 import { PassModel, PassProgramModel, Prisma, UserModel } from '@prisma/client';
 import dayjs from 'dayjs';
 import { v1 } from 'uuid';
-import { $$$, getPaymentsClient, Joi, prisma, RESULT } from '..';
+import { $$$, getCoreServiceClient, Joi, prisma, RESULT } from '..';
 
 export interface CouponModel {
   couponId: string;
@@ -111,7 +111,7 @@ export class Pass {
     couponGroupId: string
   ): Promise<CouponModel> {
     const { userId } = user;
-    const { coupon } = await getPaymentsClient()
+    const { coupon } = await getCoreServiceClient('payments')
       .post(`users/${userId}/coupons`, { json: { couponGroupId } })
       .json<{ opcode: number; coupon: CouponModel }>();
 
@@ -123,7 +123,7 @@ export class Pass {
     couponId: string
   ): Promise<void> {
     const { userId } = user;
-    await getPaymentsClient()
+    await getCoreServiceClient('payments')
       .delete(`users/${userId}/coupons/${couponId}`)
       .json<{ opcode: number }>();
   }
@@ -175,7 +175,7 @@ export class Pass {
         required: true,
       };
 
-      await getPaymentsClient().post(`records`, { json }).json();
+      await getCoreServiceClient('payments').post(`records`, { json }).json();
     }
 
     const expiredAt = Pass.caclulateExpiredAt(pass);
