@@ -1,15 +1,36 @@
 import { Prisma, PrismaPromise, SessionModel, UserModel } from '@prisma/client';
 import crypto from 'crypto';
-import { $$$, prisma, RESULT } from '..';
+import { $$$, Joi, prisma, RESULT } from '..';
 
 export class Session {
   public static async getSessions(
-    user: UserModel
+    user: UserModel,
+    props?: {
+      take?: number;
+      skip?: number;
+      search?: string;
+      orderByField?: 'usedAt' | 'createdAt' | 'updatedAt';
+      orderBySort?: 'asc' | 'desc';
+    }
   ): Promise<{ total: number; sessions: SessionModel[] }> {
     const { userId } = user;
+    const where: Prisma.PassModelWhereInput = { userId };
+    const { take, skip, search, orderByField, orderBySort } = await Joi.object({
+      take: Joi.number().default(10).optional(),
+      skip: Joi.number().default(0).optional(),
+      search: Joi.string().allow('').optional(),
+      orderByField: Joi.string()
+        .valid('usedAt', 'createdAt', 'updatedAt')
+        .default('createdAt')
+        .optional(),
+      orderBySort: Joi.string().valid('asc', 'desc').default('desc').optional(),
+    }).validateAsync(props);
+
+    if (search) where.userId = { contains: search };
+    const orderBy = { [orderByField]: orderBySort };
     const [total, sessions] = await prisma.$transaction([
-      prisma.sessionModel.count({ where: { userId } }),
-      prisma.sessionModel.findMany({ where: { userId } }),
+      prisma.sessionModel.count({ where }),
+      prisma.sessionModel.findMany({ where, take, skip, orderBy }),
     ]);
 
     return { total, sessions };

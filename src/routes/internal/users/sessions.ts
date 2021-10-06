@@ -13,7 +13,11 @@ export function getInternalUsersSessionsRouter(): Router {
   router.get(
     '/',
     Wrapper(async (req) => {
-      const { sessions, total } = await Session.getSessions(req.internal.user);
+      const { sessions, total } = await Session.getSessions(
+        req.internal.user,
+        req.query
+      );
+
       throw RESULT.SUCCESS({ details: { sessions, total } });
     })
   );
@@ -21,9 +25,10 @@ export function getInternalUsersSessionsRouter(): Router {
   router.get(
     '/generate',
     Wrapper(async (req) => {
+      const platform = '하이킥 관리자';
       const sessionId = await Session.createSession(
         req.internal.user,
-        '하이킥 관리자'
+        platform
       );
 
       throw RESULT.SUCCESS({ details: { sessionId } });
