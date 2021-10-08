@@ -68,7 +68,17 @@ export class User {
 
   public static async signupUser(props: UserInfo): Promise<UserModel> {
     const transactions: PrismaPromise<any>[] = [];
-    const schema = Joi.object({
+    const {
+      realname,
+      birthday,
+      email,
+      phone,
+      licenseStr,
+      methods,
+      receiveSMS,
+      receivePush,
+      receiveEmail,
+    } = await Joi.object({
       realname: Joi.string().max(16).required(),
       birthday: Joi.date().required(),
       email: Joi.string().email().optional(),
@@ -81,10 +91,16 @@ export class User {
       methods: Joi.object({
         kakao: Joi.string().optional(),
       }).optional(),
-    });
-
-    const { realname, birthday, email, phone, licenseStr, methods } =
-      await schema.validateAsync(props);
+      receiveSMS: Joi.boolean()
+        .custom((e) => (e ? new Date() : null))
+        .required(),
+      receivePush: Joi.boolean()
+        .custom((e) => (e ? new Date() : null))
+        .required(),
+      receiveEmail: Joi.boolean()
+        .custom((e) => (e ? new Date() : null))
+        .required(),
+    }).validateAsync(props);
 
     const [userId, phoneObj] = await Promise.all([
       this.getUnusedUserId(),
@@ -101,6 +117,9 @@ export class User {
           birthday,
           email,
           phoneNo,
+          receiveSMS,
+          receivePush,
+          receiveEmail,
         },
       })
     );
@@ -141,7 +160,15 @@ export class User {
     props: UserInfo
   ): Promise<UserModel> {
     const transactions: Promise<() => PrismaPromise<any>>[] = [];
-    const schema = Joi.object({
+    const {
+      realname,
+      birthday,
+      email,
+      phone,
+      receiveSMS,
+      receivePush,
+      receiveEmail,
+    } = await Joi.object({
       realname: Joi.string().max(16).optional(),
       birthday: Joi.date().optional(),
       email: Joi.string().email().optional(),
@@ -150,14 +177,24 @@ export class User {
         phoneNo: Joi.string().required(),
         code: Joi.string().allow(null).required(),
       }).optional(),
-    });
+      receiveSMS: Joi.boolean()
+        .custom((e) => (e ? new Date() : null))
+        .optional(),
+      receivePush: Joi.boolean()
+        .custom((e) => (e ? new Date() : null))
+        .optional(),
+      receiveEmail: Joi.boolean()
+        .custom((e) => (e ? new Date() : null))
+        .optional(),
+    }).validateAsync(props);
 
     const { userId } = user;
     const where = { userId };
-    const data: Prisma.UserModelUpdateInput = {};
-    const { realname, birthday, email, phone } = await schema.validateAsync(
-      props
-    );
+    const data: Prisma.UserModelUpdateInput = {
+      receiveSMS,
+      receivePush,
+      receiveEmail,
+    };
 
     let phoneObj: PhoneModel | undefined;
     if (realname && realname !== user.realname) data.realname = realname;

@@ -28,6 +28,10 @@ model UserModel {
   sessions SessionModel[]
   passes   PassModel[]
 
+  receiveSMS   DateTime?
+  receivePush  DateTime?
+  receiveEmail DateTime?
+
   usedAt    DateTime  @default(now())
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
