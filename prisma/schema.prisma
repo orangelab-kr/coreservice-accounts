@@ -15,6 +15,7 @@ enum MethodProvider {
 
 model UserModel {
   userId String @id @default(uuid())
+  profileUrl String?
 
   realname String
   phoneNo  String

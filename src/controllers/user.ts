@@ -4,6 +4,7 @@ import { $$$, $PQ, Joi, License, Method, Phone, prisma, RESULT } from '..';
 
 export interface PreUserModel {
   userId: string;
+  profileUrl?: string;
   phoneNo: string;
   email?: string;
   birthday: Date;
@@ -70,6 +71,7 @@ export class User {
     const transactions: PrismaPromise<any>[] = [];
     const {
       realname,
+      profileUrl,
       birthday,
       email,
       phone,
@@ -80,6 +82,7 @@ export class User {
       receiveEmail,
     } = await Joi.object({
       realname: Joi.string().max(16).required(),
+      profileUrl: Joi.string().uri().allow(null).required(),
       birthday: Joi.date().required(),
       email: Joi.string().email().optional(),
       phone: Joi.object({
@@ -113,6 +116,7 @@ export class User {
       prisma.userModel.create({
         data: {
           userId,
+          profileUrl,
           realname,
           birthday,
           email,
@@ -126,6 +130,7 @@ export class User {
 
     const preUser: PreUserModel = {
       userId,
+      profileUrl,
       realname,
       birthday,
       phoneNo,
@@ -162,6 +167,7 @@ export class User {
     const transactions: Promise<() => PrismaPromise<any>>[] = [];
     const {
       realname,
+      profileUrl,
       birthday,
       email,
       phone,
@@ -170,6 +176,7 @@ export class User {
       receiveEmail,
     } = await Joi.object({
       realname: Joi.string().max(16).optional(),
+      profileUrl: Joi.string().uri().allow(null).optional(),
       birthday: Joi.date().optional(),
       email: Joi.string().email().optional(),
       phone: Joi.object({
@@ -191,6 +198,7 @@ export class User {
     const { userId } = user;
     const where = { userId };
     const data: Prisma.UserModelUpdateInput = {
+      profileUrl,
       receiveSMS,
       receivePush,
       receiveEmail,
