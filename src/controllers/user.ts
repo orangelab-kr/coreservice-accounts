@@ -82,7 +82,7 @@ export class User {
       receiveEmail,
     } = await Joi.object({
       realname: Joi.string().max(16).required(),
-      profileUrl: Joi.string().uri().allow(null).required(),
+      profileUrl: Joi.string().uri().allow(null).optional(),
       birthday: Joi.date().required(),
       email: Joi.string().email().optional(),
       phone: Joi.object({
