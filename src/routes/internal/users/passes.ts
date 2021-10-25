@@ -35,9 +35,8 @@ export function getInternalUsersPassesRouter(): Router {
     InternalPassMiddleware(),
     Wrapper(async (req) => {
       const { internal, query } = req;
-      const { pass, user } = internal;
       const free = query.free !== undefined;
-      await $$$(Pass.extendPass(user, pass, free));
+      const pass = await $$$(Pass.extendPass(internal.pass, free));
       throw RESULT.SUCCESS({ details: { pass } });
     })
   );

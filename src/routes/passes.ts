@@ -34,8 +34,7 @@ export function getPassesRouter(): Router {
     '/:passId/extend',
     PassMiddleware(),
     Wrapper(async (req) => {
-      const { user, pass } = req;
-      await $$$(Pass.extendPass(user, pass));
+      const pass = await $$$(Pass.extendPass(req.pass));
       throw RESULT.SUCCESS({ details: { pass } });
     })
   );

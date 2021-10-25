@@ -14,7 +14,7 @@ enum MethodProvider {
 }
 
 model UserModel {
-  userId String @id @default(uuid())
+  userId     String  @id @default(uuid())
   profileUrl String?
 
   realname String
@@ -129,7 +129,8 @@ model PassModel {
   passProgramId String
   passProgram   PassProgramModel @relation(fields: [passProgramId], references: [passProgramId])
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  requestedAt DateTime  @default(now())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
 }

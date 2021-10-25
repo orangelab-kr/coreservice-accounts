@@ -1,7 +1,13 @@
-import { PassModel, PassProgramModel, Prisma, UserModel } from '@prisma/client';
+import {
+  PassModel,
+  PassProgramModel,
+  Prisma,
+  PrismaPromise,
+  UserModel,
+} from '@prisma/client';
 import dayjs from 'dayjs';
 import { v1 } from 'uuid';
-import { $$$, getCoreServiceClient, Joi, prisma, RESULT } from '..';
+import { $$$, getCoreServiceClient, Joi, prisma, RESULT, User } from '..';
 
 export interface CouponModel {
   couponId: string;
@@ -31,6 +37,29 @@ export class Pass {
   public static readonly defaultInclude: Prisma.PassModelInclude = {
     passProgram: true,
   };
+
+  public static async getExtendablePass(
+    props: {
+      interval?: number;
+      remaining?: number;
+    } = {},
+    withUser = false
+  ): Promise<() => PrismaPromise<PassModel[]>> {
+    const { interval, remaining } = { interval: 3, remaining: 7, ...props };
+    const remainingDate = dayjs().add(remaining, 'd');
+    const intervalDate = dayjs().subtract(interval, 'd');
+    return () =>
+      prisma.passModel.findMany({
+        include: { ...Pass.defaultInclude, user: withUser },
+        where: {
+          requestedAt: { lte: intervalDate.toDate() },
+          expiredAt: {
+            gte: dayjs().toDate(),
+            lte: remainingDate.toDate(),
+          },
+        },
+      });
+  }
 
   public static async getPass(
     passId: string
@@ -152,18 +181,17 @@ export class Pass {
     };
 
     const include = Pass.defaultInclude;
-    if (validity) data.expiredAt = dayjs().add(validity, 'ms').toDate();
+    if (validity) data.expiredAt = dayjs().add(validity, 's').toDate();
     return () => prisma.passModel.create({ data, include });
   }
 
   public static async extendPass(
-    user: UserModel,
-    pass: PassModel & { passProgram?: PassProgramModel },
+    pass: PassModel & { passProgram?: PassProgramModel; user?: UserModel },
     free = false
   ): Promise<() => Prisma.Prisma__PassModelClient<PassModel>> {
-    const { userId } = user;
-    const { passId, passProgram, couponId } = pass;
+    const { passId, passProgram, couponId, userId } = pass;
     if (!passProgram) throw RESULT.INVALID_ERROR();
+    const user = pass.user || (await User.getUserOrThrow(userId));
     const { name, price, passProgramId, couponGroupId } = passProgram;
     if (!passProgram.isSale) throw RESULT.PASS_PROGRAM_IS_NOT_SALE();
     if (!free && price && price > 0) {
@@ -193,13 +221,14 @@ export class Pass {
   }
 
   public static async modifyPass(
-    pass: PassModel,
-    props: { autoRenew?: boolean }
+    pass: PassModel & { passProgram?: PassProgramModel },
+    props: { autoRenew?: boolean; requestedAt?: Date }
   ): Promise<() => Prisma.Prisma__PassModelClient<PassModel>> {
     const { passId } = pass;
     const where = { passId };
     const data = await Joi.object({
       autoRenew: Joi.boolean().optional(),
+      requestedAt: Joi.date().optional(),
     }).validateAsync(props);
     const include = Pass.defaultInclude;
     return () => prisma.passModel.update({ where, data, include });
