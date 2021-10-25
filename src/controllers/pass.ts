@@ -213,8 +213,8 @@ export class Pass {
     if (!validity) return null;
     const expiredAt = dayjs(pass.expiredAt);
     return pass.expiredAt && expiredAt.isBefore(dayjs())
-      ? dayjs().add(validity, 'ms').toDate()
-      : expiredAt.add(validity, 'ms').toDate();
+      ? dayjs().add(validity, 's').toDate()
+      : expiredAt.add(validity, 's').toDate();
   }
 
   public static async generatePassId(): Promise<string> {
