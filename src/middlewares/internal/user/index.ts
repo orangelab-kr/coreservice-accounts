@@ -1,5 +1,6 @@
 import { WrapperCallback, RESULT, Session, User, Wrapper } from '../../..';
 
+export * from './notification';
 export * from './session';
 
 export function InternalUserBySessionMiddleware(): WrapperCallback {
@@ -17,10 +18,9 @@ export function InternalUserBySessionMiddleware(): WrapperCallback {
 export function InternalUserMiddleware(): WrapperCallback {
   return Wrapper(async (req, res, next) => {
     const { userId } = req.params;
-    if (!userId) throw RESULT.REQUIRED_LOGIN();
+    if (!userId) throw RESULT.CANNOT_FIND_USER();
     const user = await User.getUserOrThrow(userId);
     req.internal.user = user;
-
     next();
   });
 }

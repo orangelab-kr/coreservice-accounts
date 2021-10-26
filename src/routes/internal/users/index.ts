@@ -2,6 +2,7 @@ import { Router } from 'express';
 import {
   getInternalUsersLicenseRouter,
   getInternalUsersMethodsRouter,
+  getInternalUsersNotificationsRouter,
   getInternalUsersPassesRouter,
   getInternalUsersSessionsRouter,
   InternalUserBySessionMiddleware,
@@ -13,6 +14,7 @@ import {
 
 export * from './license';
 export * from './methods';
+export * from './notifications';
 export * from './passes';
 export * from './sessions';
 
@@ -35,6 +37,12 @@ export function getInternalUsersRouter(): Router {
     '/:userId/sessions',
     InternalUserMiddleware(),
     getInternalUsersSessionsRouter()
+  );
+
+  router.use(
+    '/:userId/notifications',
+    InternalUserMiddleware(),
+    getInternalUsersNotificationsRouter()
   );
 
   router.use(

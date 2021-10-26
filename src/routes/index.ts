@@ -6,6 +6,7 @@ import {
   getInternalRouter,
   getLicenseRouter,
   getMethodsRouter,
+  getNotificationsRouter,
   getPassesRouter,
   getPassProgramsRouter,
   InternalMiddleware,
@@ -18,6 +19,7 @@ export * from './auth';
 export * from './internal';
 export * from './license';
 export * from './methods';
+export * from './notifications';
 export * from './passes';
 export * from './passPrograms';
 
@@ -29,6 +31,7 @@ export function getRouter(): Router {
   router.use('/methods', getMethodsRouter());
   router.use('/passes', UserMiddleware(), getPassesRouter());
   router.use('/license', UserMiddleware(), getLicenseRouter());
+  router.use('/notifications', UserMiddleware(), getNotificationsRouter());
   router.use('/passPrograms', UserMiddleware(), getPassProgramsRouter());
   router.use('/internal', InternalMiddleware(), getInternalRouter());
   router.get(

@@ -7,6 +7,7 @@ declare global {
       sessionId: string;
       coupon: CouponModel;
       user: UserModel;
+      notification: NotificationModels;
       passProgram: PassProgramModel;
       pass: PassProgram;
       internal: {
@@ -18,6 +19,7 @@ declare global {
         sessionId: string;
         user: UserModel;
         session: SessionModel;
+        notification: NotificationModels;
         passProgram: PassProgramModel;
         pass: PassProgram;
       };
