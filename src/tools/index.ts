@@ -5,6 +5,7 @@ export * from './joi';
 export * from './kakao';
 export * from './logger';
 export * from './messageGateway';
+export * from './messaging';
 export * from './platform';
 export * from './result';
 export * from './sentry';

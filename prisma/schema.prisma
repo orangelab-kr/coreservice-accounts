@@ -25,9 +25,10 @@ model UserModel {
   licenseId String?
   license   LicenseModel? @relation(fields: [licenseId], references: [licenseId])
 
-  methods  MethodModel[]
-  sessions SessionModel[]
-  passes   PassModel[]
+  methods       MethodModel[]
+  sessions      SessionModel[]
+  passes        PassModel[]
+  notifications NotificationModel[]
 
   receiveSMS   DateTime?
   receivePush  DateTime?
@@ -133,4 +134,28 @@ model PassModel {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
+}
+
+enum NotificationType {
+  info
+  advisting
+}
+
+model NotificationModel {
+  notificationId String @id @default(uuid())
+
+  type        NotificationType
+  title       String?
+  description String?
+  url         String?
+
+  userId String
+  user   UserModel @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  visible   Boolean
+  sendedAt  DateTime?
+  readedAt  DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 }
