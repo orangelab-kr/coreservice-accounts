@@ -84,7 +84,7 @@ export class User {
       realname: Joi.string().max(16).required(),
       profileUrl: Joi.string().uri().allow(null).optional(),
       birthday: Joi.date().required(),
-      email: Joi.string().email().optional(),
+      email: Joi.string().email().allow(null).optional(),
       phone: Joi.object({
         phoneId: Joi.string().uuid().required(),
         phoneNo: Joi.string().required(),
@@ -92,7 +92,7 @@ export class User {
       }).required(),
       licenseStr: Joi.string().optional(),
       methods: Joi.object({
-        kakao: Joi.string().optional(),
+        kakao: Joi.string().allow(null).optional(),
       }).optional(),
       receiveSMS: Joi.boolean()
         .custom((e) => (e ? new Date() : null))
