@@ -52,5 +52,14 @@ export function getAuthRouter(): Router {
     })
   );
 
+  router.delete(
+    '/secession',
+    UserMiddleware(),
+    Wrapper(async (req) => {
+      await User.secessionUser(req.user, req.body);
+      throw RESULT.SUCCESS();
+    })
+  );
+
   return router;
 }

@@ -29,6 +29,7 @@ model UserModel {
   sessions      SessionModel[]
   passes        PassModel[]
   notifications NotificationModel[]
+  secessions    SecessionModel[]
 
   receiveSMS   DateTime?
   receivePush  DateTime?
@@ -57,7 +58,7 @@ model MethodModel {
   description String
 
   userId String
-  user   UserModel @relation(fields: [userId], references: [userId])
+  user   UserModel @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
   provider MethodProvider
   identity String
@@ -71,7 +72,7 @@ model SessionModel {
   sessionId String @id
 
   userId String
-  user   UserModel @relation(fields: [userId], references: [userId])
+  user   UserModel @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
   platform       String  @default("")
   messagingToken String?
@@ -120,7 +121,7 @@ model PassModel {
   passId String @id @default(uuid())
 
   userId String
-  user   UserModel @relation(fields: [userId], references: [userId])
+  user   UserModel @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
   autoRenew     Boolean
   couponId      String?
@@ -128,7 +129,7 @@ model PassModel {
   expiredAt     DateTime?
 
   passProgramId String
-  passProgram   PassProgramModel @relation(fields: [passProgramId], references: [passProgramId])
+  passProgram   PassProgramModel @relation(fields: [passProgramId], references: [passProgramId], onDelete: Cascade)
 
   requestedAt DateTime  @default(now())
   createdAt   DateTime  @default(now())
@@ -155,6 +156,19 @@ model NotificationModel {
   visible   Boolean
   sendedAt  DateTime?
   readedAt  DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+model SecessionModel {
+  secssionId String @id @default(uuid())
+
+  userId String
+  user   UserModel @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  reason String? @db.Text
+
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?

@@ -66,7 +66,7 @@ export class Session {
       const where = { sessionId };
       const data = { user: { update: { usedAt: new Date() } } };
       const user = await prisma.sessionModel.update({ where, data }).user();
-      if (!user) throw Error();
+      if (!user || user.deletedAt) throw Error();
 
       return user;
     } catch (err: any) {

@@ -86,5 +86,14 @@ export function getInternalUsersRouter(): Router {
     })
   );
 
+  router.delete(
+    '/:userId/secession',
+    InternalUserMiddleware(),
+    Wrapper(async (req) => {
+      await User.secessionUser(req.internal.user, req.body);
+      throw RESULT.SUCCESS();
+    })
+  );
+
   return router;
 }
