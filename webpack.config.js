@@ -21,11 +21,7 @@ module.exports = {
       },
     ],
   },
-  plugins: [
-    new CopyWebpackPlugin({
-      patterns: ['./locales/**', './prisma/**'],
-    }),
-  ],
+  plugins: [new CopyWebpackPlugin({ patterns: ['./locales/**'] })],
   output: {
     libraryTarget: 'commonjs',
     filename: '[name].js',
