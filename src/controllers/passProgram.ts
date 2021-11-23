@@ -170,18 +170,20 @@ export class PassProgram {
   public static async purchasePassProgram(
     user: UserModel,
     passProgram: PassProgramModel,
-    props: { autoRenew: boolean }
+    props: { autoRenew: boolean; cardId?: string }
   ): Promise<any> {
     const { userId } = user;
     const { passProgramId, isSale, price, name } = passProgram;
-    const { autoRenew } = await Joi.object({
+    const { autoRenew, cardId } = await Joi.object({
       autoRenew: Joi.boolean().required(),
+      cardId: Joi.string().uuid().optional(),
     }).validateAsync(props);
     if (!isSale) throw RESULT.PASS_PROGRAM_IS_NOT_SALE();
     const passId = await Pass.generatePassId();
     if (price && price > 0) {
       const json = {
         userId,
+        cardId,
         name: `패스 / ${name} (구매)`,
         properties: { coreservice: { passId, passProgramId } },
         amount: price,
