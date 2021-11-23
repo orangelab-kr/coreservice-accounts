@@ -86,7 +86,7 @@ export class Phone {
       select: { phoneNo: true, phoneId: true, code: true },
     });
 
-    if (!phone) throw RESULT.RETRY_PHONE_VALIDATE();
+    if (!phone) throw RESULT.INVALID_PHONE_VALIDATE_CODE();
     return phone;
   }
 
