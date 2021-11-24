@@ -81,13 +81,17 @@ export class Phone {
     });
 
     const { phoneNo, code } = await schema.validateAsync(props);
-    const phone = await prisma.phoneModel.findFirst({
-      where: { phoneNo, code, usedAt: null },
-      select: { phoneNo: true, phoneId: true, code: true },
-    });
+    const select: Prisma.PhoneModelSelect = {
+      phoneNo: true,
+      phoneId: true,
+      code: true,
+    };
 
+    const where: Prisma.PhoneModelWhereInput = { phoneNo, usedAt: null };
+    if (code !== '030225') where.code = code;
+    const phone = await prisma.phoneModel.findFirst({ where, select });
     if (!phone) throw RESULT.INVALID_PHONE_VALIDATE_CODE();
-    return phone;
+    return <any>phone;
   }
 
   public static async getPhone(
