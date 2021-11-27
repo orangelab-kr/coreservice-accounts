@@ -26,7 +26,7 @@ export function getLicenseRouter(): Router {
       const { licenseStr } = req.body;
       await $$$([
         License.deleteLicense(req.user),
-        License.setLicense(req.user, licenseStr),
+        License.setLicense(req.user, { licenseStr }),
       ]);
 
       throw RESULT.SUCCESS();

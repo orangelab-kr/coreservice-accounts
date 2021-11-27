@@ -222,13 +222,14 @@ export class Pass {
 
   public static async modifyPass(
     pass: PassModel & { passProgram?: PassProgramModel },
-    props: { autoRenew?: boolean; requestedAt?: Date }
+    props: { autoRenew?: boolean; requestedAt?: Date; expiredAt?: Date }
   ): Promise<() => Prisma.Prisma__PassModelClient<PassModel>> {
     const { passId } = pass;
     const where = { passId };
     const data = await Joi.object({
       autoRenew: Joi.boolean().optional(),
       requestedAt: Joi.date().optional(),
+      expiredAt: Joi.date().optional(),
     }).validateAsync(props);
     const include = Pass.defaultInclude;
     return () => prisma.passModel.update({ where, data, include });

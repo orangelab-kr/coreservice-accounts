@@ -1,4 +1,9 @@
-import { CouponModel, UserModel } from '@prisma/client';
+import {
+  CouponModel,
+  PassModel,
+  PassProgramModel,
+  UserModel,
+} from '@prisma/client';
 import 'express';
 
 declare global {
@@ -9,7 +14,7 @@ declare global {
       user: UserModel;
       notification: NotificationModels;
       passProgram: PassProgramModel;
-      pass: PassProgram;
+      pass: PassModel;
       internal: {
         sub: string;
         iss: string;

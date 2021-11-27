@@ -32,16 +32,20 @@ export class License {
 
   public static async setLicense(
     user: UserModel | PreUserModel,
-    licenseStr: string
+    props: { licenseStr: string; bypass?: boolean }
   ): Promise<() => Prisma.Prisma__LicenseModelClient<LicenseModel>> {
     const { userId, realname, birthday } = user;
-    const isValid = await this.validateLicense({
-      realname,
-      birthday,
-      licenseStr,
-    });
+    const { licenseStr, bypass } = props;
+    if (!bypass) {
+      const isValid = await this.validateLicense({
+        realname,
+        birthday,
+        licenseStr,
+      });
 
-    if (!isValid) throw RESULT.INVALID_LICENSE();
+      if (!isValid) throw RESULT.INVALID_LICENSE();
+    }
+
     return () =>
       prisma.licenseModel.create({
         data: {

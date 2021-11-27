@@ -25,7 +25,7 @@ export function getInternalUsersLicenseRouter(): Router {
     Wrapper(async (req) => {
       await $$$([
         License.deleteLicense(req.internal.user),
-        License.setLicense(req.internal.user, req.body.licenseStr),
+        License.setLicense(req.internal.user, req.body),
       ]);
 
       throw RESULT.SUCCESS();

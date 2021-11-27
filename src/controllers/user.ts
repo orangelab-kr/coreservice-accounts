@@ -139,7 +139,7 @@ export class User {
 
     const asyncLicense = async () => {
       if (!licenseStr) return;
-      const createLicense = await License.setLicense(preUser, licenseStr);
+      const createLicense = await License.setLicense(preUser, { licenseStr });
       transactions.push(createLicense());
     };
 
