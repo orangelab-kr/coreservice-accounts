@@ -56,6 +56,7 @@ export class User {
         { realname: { contains: search } },
         { phoneNo: { contains: search } },
         { email: { contains: search } },
+        { license: { licenseStr: { contains: search } } },
       ];
     }
 
