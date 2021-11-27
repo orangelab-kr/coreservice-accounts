@@ -24,12 +24,12 @@ export function getLicenseRouter(): Router {
     '/',
     Wrapper(async (req) => {
       const { licenseStr } = req.body;
-      await $$$([
+      const [, license] = await $$$([
         License.deleteLicense(req.user),
         License.setLicense(req.user, { licenseStr }),
       ]);
 
-      throw RESULT.SUCCESS();
+      throw RESULT.SUCCESS({ details: { license } });
     })
   );
 
