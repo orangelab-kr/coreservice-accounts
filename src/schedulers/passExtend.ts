@@ -30,7 +30,7 @@ export const onPassExtendScheduler = async (): Promise<void> => {
 
         logger.info(`패스 연장 / ${displayName} 패스는 ${message}`);
         transactions.push(Pass.modifyPass(pass, props));
-        await Notification.createNotification(user, {
+        await Notification.sendNotification(user, {
           type: 'info',
           title: `🎫 ${passProgram.name} 패스 / ${shortMessage} 만료예정`,
           description: `패스는 ${message}`,
@@ -46,7 +46,7 @@ export const onPassExtendScheduler = async (): Promise<void> => {
 
         props.autoRenew = false;
         transactions.push(Pass.modifyPass(pass, props));
-        await Notification.createNotification(user, {
+        await Notification.sendNotification(user, {
           type: 'info',
           title: `🎫 ${passProgram.name} 패스 / 자동연장 실패`,
           description: `해당 패스는 판매가 중단되어 더이상 연장할 수 없습니다.`,
@@ -62,7 +62,7 @@ export const onPassExtendScheduler = async (): Promise<void> => {
         `패스 연장 / ${displayName} 패스가 ${extendedDate}까지 연장되었습니다.`
       );
 
-      await Notification.createNotification(user, {
+      await Notification.sendNotification(user, {
         type: 'info',
         title: `🎫 ${passProgram.name} 패스 / 자동연장 성공`,
         description: `${extendedDate}까지 이용할 수 있도록 연장되었습니다.`,
@@ -75,7 +75,7 @@ export const onPassExtendScheduler = async (): Promise<void> => {
 
         props.autoRenew = false;
         transactions.push(Pass.modifyPass(pass, props));
-        await Notification.createNotification(user, {
+        await Notification.sendNotification(user, {
           type: 'info',
           title: `🎫 ${passProgram.name} 패스 / 자동연장 실패`,
           description: `자동으로 연장할 수 없습니다. ${err.details.message}`,
