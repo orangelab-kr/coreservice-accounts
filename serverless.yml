@@ -38,3 +38,9 @@ functions:
       - schedule:
           enabled: true
           rate: cron(0 6 ? * 2-6 *)
+  levelUpdateScheduler:
+    handler: src/schedulers/levelUpdate.onLevelUpdateScheduler
+    events:
+      - schedule:
+          enabled: true
+          rate: cron(0 0 1 * ? *)
