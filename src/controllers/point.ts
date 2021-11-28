@@ -1,7 +1,50 @@
-import { Prisma, PointModel, PointType, UserModel } from '@prisma/client';
+import { PointModel, PointType, Prisma, UserModel } from '@prisma/client';
 import { Joi, prisma } from '..';
 
 export class Point {
+  public static async getPoints(
+    user: UserModel,
+    props: {
+      take?: number;
+      skip?: number;
+      search?: string;
+      type?: string | string[];
+      orderByField?: 'point' | 'createdAt' | 'updatedAt';
+      orderBySort?: 'asc' | 'desc';
+    }
+  ): Promise<{ total: number; points: PointModel[] }> {
+    const { userId } = user;
+    const where: Prisma.PointModelWhereInput = { userId };
+    const { take, skip, search, type, orderByField, orderBySort } =
+      await Joi.object({
+        take: Joi.number().default(10).optional(),
+        skip: Joi.number().default(0).optional(),
+        search: Joi.string().allow('').optional(),
+        type: Joi.array()
+          .items(Joi.string().valid(...Object.keys(PointType)))
+          .single()
+          .optional(),
+        orderByField: Joi.string()
+          .valid('point', 'createdAt', 'updatedAt')
+          .default('createdAt')
+          .optional(),
+        orderBySort: Joi.string()
+          .valid('asc', 'desc')
+          .default('desc')
+          .optional(),
+      }).validateAsync(props);
+    if (search) where.pointId = { contains: search };
+    if (type) where.type = { in: type };
+
+    const orderBy = { [orderByField]: orderBySort };
+    const [total, points] = await prisma.$transaction([
+      prisma.pointModel.count({ where }),
+      prisma.pointModel.findMany({ where, take, skip, orderBy }),
+    ]);
+
+    return { total, points };
+  }
+
   public static async increasePoint(
     user: UserModel,
     props: { point: number; type: PointType }

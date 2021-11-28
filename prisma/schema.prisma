@@ -178,7 +178,7 @@ model SecessionModel {
 }
 
 enum PointType {
-  RIDE
+  ride
 }
 
 model PointModel {

@@ -4,11 +4,13 @@ import {
   getAuthLoginRouter,
   getAuthRouter,
   getInternalRouter,
+  getLevelRouter,
   getLicenseRouter,
   getMethodsRouter,
   getNotificationsRouter,
   getPassesRouter,
   getPassProgramsRouter,
+  getPointsRouter,
   InternalMiddleware,
   RESULT,
   UserMiddleware,
@@ -17,11 +19,13 @@ import {
 
 export * from './auth';
 export * from './internal';
+export * from './level';
 export * from './license';
 export * from './methods';
 export * from './notifications';
 export * from './passes';
 export * from './passPrograms';
+export * from './points';
 
 export function getRouter(): Router {
   const router = Router();
@@ -31,6 +35,8 @@ export function getRouter(): Router {
   router.use('/methods', getMethodsRouter());
   router.use('/passes', UserMiddleware(), getPassesRouter());
   router.use('/license', UserMiddleware(), getLicenseRouter());
+  router.use('/points', UserMiddleware(), getPointsRouter());
+  router.use('/level', UserMiddleware(), getLevelRouter());
   router.use('/notifications', UserMiddleware(), getNotificationsRouter());
   router.use('/passPrograms', UserMiddleware(), getPassProgramsRouter());
   router.use('/internal', InternalMiddleware(), getInternalRouter());

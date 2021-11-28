@@ -3,6 +3,10 @@ import dayjs from 'dayjs';
 import { Point, prisma, RESULT } from '..';
 
 export class Level {
+  public static async getLevels(): Promise<LevelModel[]> {
+    return prisma.levelModel.findMany({});
+  }
+
   public static async updateLevel(user: UserModel): Promise<UserModel> {
     const { userId } = user;
     const lastMonth = dayjs().subtract(1, 'month');

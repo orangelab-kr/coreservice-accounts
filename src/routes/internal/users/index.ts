@@ -4,6 +4,7 @@ import {
   getInternalUsersMethodsRouter,
   getInternalUsersNotificationsRouter,
   getInternalUsersPassesRouter,
+  getInternalUsersPointsRouter,
   getInternalUsersSessionsRouter,
   InternalUserBySessionMiddleware,
   InternalUserMiddleware,
@@ -16,6 +17,7 @@ export * from './license';
 export * from './methods';
 export * from './notifications';
 export * from './passes';
+export * from './points';
 export * from './sessions';
 
 export function getInternalUsersRouter(): Router {
@@ -49,6 +51,12 @@ export function getInternalUsersRouter(): Router {
     '/:userId/passes',
     InternalUserMiddleware(),
     getInternalUsersPassesRouter()
+  );
+
+  router.use(
+    '/:userId/points',
+    InternalUserMiddleware(),
+    getInternalUsersPointsRouter()
   );
 
   router.post(
