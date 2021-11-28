@@ -14,22 +14,25 @@ enum MethodProvider {
 }
 
 model UserModel {
-  userId     String  @id @default(uuid())
+  userId String @id @default(uuid())
+
+  realname   String
   profileUrl String?
+  phoneNo    String
+  birthday   DateTime
+  email      String?
+  licenseId  String?
+  levelNo    Int
 
-  realname String
-  phoneNo  String
-  email    String?
-  birthday DateTime
-
-  licenseId String?
-  license   LicenseModel? @relation(fields: [licenseId], references: [licenseId])
+  level   LevelModel    @relation(fields: [levelNo], references: [levelNo])
+  license LicenseModel? @relation(fields: [licenseId], references: [licenseId])
 
   methods       MethodModel[]
   sessions      SessionModel[]
   passes        PassModel[]
   notifications NotificationModel[]
   secessions    SecessionModel[]
+  points        PointModel[]
 
   receiveSMS   DateTime?
   receivePush  DateTime?
@@ -168,6 +171,38 @@ model SecessionModel {
   user   UserModel @relation(fields: [userId], references: [userId], onDelete: Cascade)
 
   reason String? @db.Text
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+enum PointType {
+  RIDE
+}
+
+model PointModel {
+  pointId String @id @default(uuid())
+
+  type  PointType
+  point Int
+
+  userId String
+  user   UserModel @relation(fields: [userId], references: [userId])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+model LevelModel {
+  levelNo Int @id
+
+  name          String
+  description   String @default("")
+  requiredPoint Int
+
+  users UserModel[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

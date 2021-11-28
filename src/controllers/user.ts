@@ -1,6 +1,16 @@
 import { PhoneModel, Prisma, PrismaPromise, UserModel } from '@prisma/client';
 import * as UUID from 'uuid';
-import { $$$, $PQ, Joi, License, Method, Phone, prisma, RESULT } from '..';
+import {
+  $$$,
+  $PQ,
+  Joi,
+  Level,
+  License,
+  Method,
+  Phone,
+  prisma,
+  RESULT,
+} from '..';
 
 export interface PreUserModel {
   userId: string;
@@ -106,9 +116,10 @@ export class User {
         .required(),
     }).validateAsync(props);
 
-    const [userId, phoneObj] = await Promise.all([
+    const [userId, phoneObj, { levelNo }] = await Promise.all([
       this.getUnusedUserId(),
       Phone.getPhoneOrThrow(phone),
+      Level.getLevelByPoint(0),
     ]);
 
     const { phoneNo } = phoneObj;
@@ -125,6 +136,7 @@ export class User {
           receiveSMS,
           receivePush,
           receiveEmail,
+          levelNo,
         },
       })
     );
