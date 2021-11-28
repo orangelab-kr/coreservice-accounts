@@ -1,9 +1,9 @@
 import { PassModel, PassProgramModel, UserModel } from '@prisma/client';
+import { $$$, logger, Notification, Pass } from '..';
 import * as Sentry from '@sentry/node';
 import dayjs from 'dayjs';
-import { $$$, logger, Notification, Pass } from '.';
 
-export const handler = async (): Promise<void> => {
+export const onPassExtendScheduler = async (): Promise<void> => {
   const transactions = [];
   const passes: (PassModel & {
     passProgram?: PassProgramModel;

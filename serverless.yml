@@ -32,8 +32,8 @@ functions:
     events:
       - http: 'ANY /'
       - http: 'ANY /{proxy+}'
-  scheduler:
-    handler: src/scheduler.handler
+  passExtendScheduler:
+    handler: src/schedulers/passExtend.onPassExtendScheduler
     events:
       - schedule:
           enabled: true
