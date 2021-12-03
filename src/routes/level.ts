@@ -1,8 +1,20 @@
 import { Router } from 'express';
-import { Level, RESULT, Wrapper } from '..';
+import { Level, Point, RESULT, Wrapper } from '..';
 
 export function getLevelRouter(): Router {
   const router = Router();
+
+  router.get(
+    '/',
+    Wrapper(async (req) => {
+      const [level, point] = await Promise.all([
+        Level.getLevel(req.user),
+        Point.getCurrentMonthPoint(req.user),
+      ]);
+
+      throw RESULT.SUCCESS({ details: { point, level } });
+    })
+  );
 
   router.get(
     '/all',
