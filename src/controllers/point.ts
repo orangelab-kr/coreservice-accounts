@@ -3,8 +3,11 @@ import dayjs from 'dayjs';
 import { Joi, prisma } from '..';
 
 export class Point {
-  public static async getCurrentMonthPoint(user: UserModel): Promise<number> {
-    const lastMonth = dayjs().subtract(1, 'month');
+  public static async getPointByMonth(
+    user: UserModel,
+    subtractMonth = 0
+  ): Promise<number> {
+    const lastMonth = dayjs().subtract(subtractMonth, 'month');
     const startedAt = lastMonth.startOf('month').toDate();
     const endedAt = lastMonth.endOf('month').toDate();
     return Point.getTotalPoint(user, { startedAt, endedAt });

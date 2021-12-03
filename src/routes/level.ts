@@ -9,7 +9,7 @@ export function getLevelRouter(): Router {
     Wrapper(async (req) => {
       const [level, point] = await Promise.all([
         Level.getLevel(req.user),
-        Point.getCurrentMonthPoint(req.user),
+        Point.getPointByMonth(req.user, 0),
       ]);
 
       throw RESULT.SUCCESS({ details: { point, level } });
