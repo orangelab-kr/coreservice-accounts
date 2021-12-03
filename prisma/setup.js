@@ -17,6 +17,7 @@ async function getDefaultLevel() {
       data: {
         levelNo: 0,
         name: '그린',
+        color: '#32CD32',
         requiredPoint: 0,
       },
     });
