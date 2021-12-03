@@ -14,6 +14,7 @@ export class Level {
   }
 
   public static async updateLevel(user: UserModel): Promise<UserModel> {
+    const { userId } = user;
     const point = await Point.getCurrentMonthPoint(user);
     const { levelNo } = await Level.getLevelByPoint(point);
     if (user.levelNo === levelNo) return user;
