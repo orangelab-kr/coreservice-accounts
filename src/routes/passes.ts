@@ -7,7 +7,7 @@ export function getPassesRouter(): Router {
   router.get(
     '/',
     Wrapper(async (req) => {
-      const { total, passes } = await Pass.getPasses(req.query);
+      const { total, passes } = await Pass.getPasses(req.query, req.user);
       throw RESULT.SUCCESS({ details: { passes, total } });
     })
   );

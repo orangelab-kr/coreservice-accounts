@@ -7,7 +7,8 @@ export function getInternalUsersPassesRouter(): Router {
   router.get(
     '/',
     Wrapper(async (req) => {
-      const { total, passes } = await Pass.getPasses(req.query);
+      const { query, internal } = req;
+      const { total, passes } = await Pass.getPasses(query, internal.user);
       throw RESULT.SUCCESS({ details: { passes, total } });
     })
   );
