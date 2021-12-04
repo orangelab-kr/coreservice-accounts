@@ -13,12 +13,20 @@ export class Level {
     return prisma.levelModel.findMany({});
   }
 
-  public static async updateLevel(user: UserModel): Promise<UserModel> {
+  public static async updateLevel(
+    user: UserModel
+  ): Promise<{ user: UserModel; level: LevelModel }> {
     const { userId } = user;
     const point = await Point.getPointByMonth(user, 1);
-    const { levelNo } = await Level.getLevelByPoint(point);
-    if (user.levelNo === levelNo) return user;
-    return prisma.userModel.update({ where: { userId }, data: { levelNo } });
+    const level = await Level.getLevelByPoint(point);
+    if (user.levelNo === level.levelNo) return { user, level };
+    const { levelNo } = level;
+    const updatedUser = await prisma.userModel.update({
+      where: { userId },
+      data: { levelNo },
+    });
+
+    return { level, user: updatedUser };
   }
 
   public static async getLevelByPoint(point: number): Promise<LevelModel> {

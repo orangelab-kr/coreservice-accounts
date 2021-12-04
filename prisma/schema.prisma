@@ -203,6 +203,9 @@ model LevelModel {
   description   String @default("")
   requiredPoint Int
 
+  couponGroupId String?
+  couponAmount  Int     @default(0)
+
   users UserModel[]
 
   createdAt DateTime  @default(now())

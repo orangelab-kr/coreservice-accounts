@@ -135,7 +135,7 @@ export class Pass {
     return { total, passes };
   }
 
-  private static async generateCoupon(
+  public static async generateCoupon(
     user: UserModel,
     couponGroupId: string
   ): Promise<CouponModel> {
