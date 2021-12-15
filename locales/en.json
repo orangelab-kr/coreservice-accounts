@@ -22,5 +22,8 @@
   "CANNOT_FIND_PASS": "The pass does not exist.",
   "PASS_PROGRAM_HAS_USING": "The pass program still has %s passes.",
   "PASS_PROGRAM_IS_NOT_SALE": "This pass has been discontinued.",
-  "PASS_PROGRAM_DISALLOWED_RENEW": "This pass cannot be extended."
+  "PASS_PROGRAM_DISALLOWED_RENEW": "This pass cannot be extended.",
+  "INVALID_REFERRAL_CODE": "Invalid referral code.",
+  "ALREADY_SELECTED_REFERRER": "You have already registered a referrer.",
+  "CANNOT_REFERRAL_MYSELF": "You cannot register yourself as a referrer."
 }

@@ -9,6 +9,7 @@ import {
   Method,
   Phone,
   prisma,
+  Referral,
   RESULT,
 } from '..';
 
@@ -116,10 +117,11 @@ export class User {
         .required(),
     }).validateAsync(props);
 
-    const [userId, phoneObj, { levelNo }] = await Promise.all([
+    const [userId, phoneObj, { levelNo }, referralCode] = await Promise.all([
       this.getUnusedUserId(),
       Phone.getPhoneOrThrow(phone),
       Level.getLevelByPoint(0),
+      Referral.generateReferralCode(),
     ]);
 
     const { phoneNo } = phoneObj;
@@ -133,6 +135,7 @@ export class User {
           birthday,
           email,
           phoneNo,
+          referralCode,
           receiveSMS,
           receivePush,
           receiveEmail,

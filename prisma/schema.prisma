@@ -34,6 +34,12 @@ model UserModel {
   secessions    SecessionModel[]
   points        PointModel[]
 
+  referralCode  String
+  referredUsers UserModel[] @relation("referredUsers")
+
+  referrerUserId String?
+  referrerUser   UserModel? @relation("referredUsers", fields: [referrerUserId], references: [userId])
+
   receiveSMS   DateTime?
   receivePush  DateTime?
   receiveEmail DateTime?

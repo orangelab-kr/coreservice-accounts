@@ -22,5 +22,8 @@
   "CANNOT_FIND_PASS": "패스가 존재하지 않습니다.",
   "PASS_PROGRAM_HAS_USING": "해당 패스 프로그램은 %n개의 패스가 있습니다.",
   "PASS_PROGRAM_IS_NOT_SALE": "해당 패스는 판매가 중단되었습니다.",
-  "PASS_PROGRAM_DISALLOWED_RENEW": "연장이 불가능한 패스입니다."
+  "PASS_PROGRAM_DISALLOWED_RENEW": "연장이 불가능한 패스입니다.",
+  "INVALID_REFERRAL_CODE": "잘못된 추천인 코드입니다.",
+  "ALREADY_SELECTED_REFERRER": "이미 추천인을 등록했습니다.",
+  "CANNOT_REFERRAL_MYSELF": "자기 자신을 추천인으로 등록할 수는 없습니다."
 }

@@ -57,7 +57,6 @@ export const giveRewardCoupon = async (props: {
       hasReward = true;
       await Pass.generateCoupon(user, couponGroupId);
     } catch (err: any) {
-      console.log(err);
       const eventId = Sentry.captureException(err);
       logger.error(
         `레벨 업데이트 / ${realname}(${userId})님에게 리워드 쿠폰을 제공할 수 없습니다. (${eventId})`
@@ -73,9 +72,9 @@ export const giveRewardCoupon = async (props: {
 };
 
 export const onLevelUpdateScheduler = async (): Promise<void> => {
+  const take = 10;
   let total;
   let skip = 0;
-  const take = 1;
 
   while (!total || total > skip) {
     const res = await User.getUsers({ take, skip });
