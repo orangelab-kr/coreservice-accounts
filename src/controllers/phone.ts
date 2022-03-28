@@ -19,16 +19,19 @@ export class Phone {
   }
 
   public static async sendVerify(
-    phoneNo: string
+    phoneNo: string,
+    debug: boolean
   ): Promise<VerifiedPhoneInterface> {
     phoneNo = Phone.getFormattedPhone(phoneNo);
     const code = Phone.generateRandomCode();
     await Phone.revokeVerify(phoneNo);
-    await sendMessageWithMessageGateway({
-      name: 'verify',
-      phone: phoneNo,
-      fields: { code },
-    });
+    if (!debug) {
+      await sendMessageWithMessageGateway({
+        name: 'verify',
+        phone: phoneNo,
+        fields: { code },
+      });
+    }
 
     const phone = await prisma.phoneModel.create({
       data: { phoneNo, code },

@@ -8,7 +8,8 @@ export function getInternalUsersMethodsPhoneRouter(): Router {
     '/verify',
     Wrapper(async (req) => {
       const phoneNo = String(req.query.phoneNo);
-      await Phone.sendVerify(phoneNo);
+      const debug = req.query.debug === 'true';
+      await Phone.sendVerify(phoneNo, debug);
       throw RESULT.SUCCESS();
     })
   );

@@ -6,16 +6,17 @@ export function getMethodsPhoneRouter(): Router {
 
   router.get(
     '/verify',
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const phoneNo = String(req.query.phoneNo);
-      await Phone.sendVerify(phoneNo);
+      const debug = req.query.debug === 'true';
+      await Phone.sendVerify(phoneNo, debug);
       throw RESULT.SUCCESS();
     })
   );
 
   router.post(
     '/verify',
-    Wrapper(async (req, res) => {
+    Wrapper(async (req) => {
       const phone = await Phone.verifyPhone(req.body);
       throw RESULT.SUCCESS({ details: { phone } });
     })
