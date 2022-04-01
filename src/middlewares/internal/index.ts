@@ -37,10 +37,8 @@ export function InternalMiddleware(): WrapperCallback {
         `Internal / ${payload.aud}(${payload.iss}) - ${req.method} ${req.originalUrl}`
       );
     } catch (err: any) {
-      if (process.env.NODE_ENV !== 'prod') {
-        logger.error(err.message);
-        logger.error(err.stack);
-      }
+      logger.error(err.message);
+      logger.error(err.stack);
 
       throw RESULT.REQUIRED_ACCESS_KEY();
     }
