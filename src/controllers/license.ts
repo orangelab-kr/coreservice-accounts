@@ -22,11 +22,16 @@ export class License {
 
   public static async deleteLicense(
     user: UserModel
-  ): Promise<() => PrismaPromise<Prisma.BatchPayload>> {
+  ): Promise<() => PrismaPromise<UserModel>> {
     const { userId } = user;
+    await prisma.licenseModel.deleteMany({
+      where: { user: { some: { userId } } },
+    });
+
     return () =>
-      prisma.licenseModel.deleteMany({
-        where: { user: { some: { userId } } },
+      prisma.userModel.update({
+        where: { userId },
+        data: { licenseId: null },
       });
   }
 
