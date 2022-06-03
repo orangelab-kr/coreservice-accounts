@@ -8,13 +8,12 @@ declare global {
 
 function createFirebaseMessaging(): Messaging {
   if (global.firebaseMessaging) return global.firebaseMessaging;
-  admin.initializeApp({
-    credential: admin.credential.cert(
-      JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIAL || '{}')
-    ),
-  });
 
-  global.firebaseMessaging = admin.messaging();
+  const name = 'coreservice';
+  const rawCredential = process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIAL || '{}';
+  const credential = admin.credential.cert(JSON.parse(rawCredential));
+  const app = admin.initializeApp({ credential }, name);
+  global.firebaseMessaging = app.messaging();
   return global.firebaseMessaging;
 }
 
