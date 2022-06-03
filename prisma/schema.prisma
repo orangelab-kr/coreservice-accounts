@@ -44,6 +44,8 @@ model UserModel {
   receivePush  DateTime?
   receiveEmail DateTime?
 
+  legacyUserId String?
+
   usedAt    DateTime  @default(now())
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

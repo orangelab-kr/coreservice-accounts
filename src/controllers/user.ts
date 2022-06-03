@@ -10,8 +10,10 @@ import {
   Phone,
   prisma,
   Referral,
-  RESULT,
+  RESULT
 } from '..';
+import { Legacy } from './legacy';
+import { VerifiedPhoneInterface } from './phone';
 
 export interface PreUserModel {
   userId: string;
@@ -26,15 +28,14 @@ export interface UserInfo {
   realname: string;
   birthday: Date;
   email?: string;
-  phone: {
-    phoneId: string;
-    phoneNo: string;
-    code: string | null;
-  };
+  phone: VerifiedPhoneInterface;
   licenseStr?: string;
   methods?: {
     kakao?: string;
   };
+  receiveSMS: boolean;
+  receivePush: boolean;
+  receiveEmail: boolean;
 }
 
 export class User {
@@ -258,6 +259,31 @@ export class User {
     const user = await this.getUserByPhone(phoneNo);
     if (!user) throw RESULT.CANNOT_FIND_USER();
     return user;
+  }
+
+  public static async getUserOrTryMigrateOrThrow(
+    phoneNo: string
+  ): Promise<UserModel> {
+    const user = await this.getUserOrTryMigrate(phoneNo);
+    if (!user) throw RESULT.CANNOT_FIND_USER();
+    return user;
+  }
+
+  public static async getUserOrTryMigrate(
+    phoneNo: string
+  ): Promise<UserModel | null> {
+    // Return if this phone number is already registered user.
+    const existsUser = await this.getUserByPhone(phoneNo);
+    if (existsUser) return existsUser;
+
+    // Check is this phone number is registered in legacy.
+    const legacyUser = await Legacy.getUserByPhone(phoneNo);
+
+    // Throw if this phone number is not registered in legacy.
+    if (!legacyUser) throw RESULT.CANNOT_FIND_USER();
+
+    // Try migration.
+    return Legacy.migrateUser(legacyUser);
   }
 
   public static async getUserByPhone(

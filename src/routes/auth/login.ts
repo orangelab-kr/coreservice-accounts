@@ -9,7 +9,7 @@ export function getAuthLoginRouter(): Router {
     Wrapper(async (req) => {
       const userAgent = req.headers['user-agent'];
       const phoneObj = await Phone.getPhoneOrThrow(req.body.phone);
-      const user = await User.getUserByPhoneOrThrow(phoneObj.phoneNo);
+      const user = await User.getUserOrTryMigrateOrThrow(phoneObj.phoneNo);
       const sessionId = await Session.createSession(user, userAgent);
       await $$$(Phone.revokePhone(phoneObj));
       throw RESULT.SUCCESS({ details: { sessionId, user } });

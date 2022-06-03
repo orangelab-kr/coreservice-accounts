@@ -175,7 +175,16 @@ export class Method {
     const methods = { kakao: accessToken };
     const birthday = dayjs(`${user.birthyear}${user.birthday}`, utc).toDate();
     const phone = await Phone.createPhone(user.phone_number);
-    return { realname, email, birthday, phone, methods };
+    return {
+      realname,
+      email,
+      birthday,
+      phone,
+      methods,
+      receiveEmail: false,
+      receivePush: false,
+      receiveSMS: false,
+    };
   }
 
   public static async connectKakaoMethod(
