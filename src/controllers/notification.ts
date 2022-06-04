@@ -5,6 +5,7 @@ import {
   UserModel,
 } from '@prisma/client';
 import { $$$, Joi, messaging, prisma, RESULT } from '..';
+import { createFirebaseMessaging } from '../tools';
 
 export class Notification {
   public static async sendNotification(
@@ -92,6 +93,7 @@ export class Notification {
 
     if (tokens.length <= 0) return;
     const data = notification.url ? { url: notification.url } : undefined;
+    const messaging = await createFirebaseMessaging();
     await messaging.sendMulticast({
       data,
       tokens,

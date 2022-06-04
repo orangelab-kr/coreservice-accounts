@@ -17,7 +17,7 @@ import { firestore } from 'firebase-admin';
 import 'reflect-metadata';
 import { prisma } from '..';
 import { $$$, RESULT } from '../tools';
-import { legacyFirestore } from '../tools/legacyFirestore';
+import { createLegacyFirestore } from '../tools/legacyFirestore';
 import { License } from './license';
 import { Phone } from './phone';
 import { User } from './user';
@@ -71,6 +71,7 @@ export class Legacy {
   public static async getUserByPhone(
     phoneNo: string
   ): Promise<LegacyUser | null> {
+    const legacyFirestore = await createLegacyFirestore();
     const docs = await legacyFirestore
       .collection('users')
       .where('phone', '==', phoneNo)
@@ -97,6 +98,7 @@ export class Legacy {
     } = legacyUser;
 
     const receiveEmail = false;
+    const legacyFirestore = await createLegacyFirestore();
     const phone = await Phone.createPhone(legacyUser.phone);
     const user = await User.signupUser({
       realname,

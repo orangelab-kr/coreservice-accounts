@@ -6,7 +6,7 @@ provider:
   runtime: nodejs14.x
   region: ap-northeast-2
   stage: stage
-  lambdaHashingVersion: '20201221'
+  timeout: 16
   apiGateway:
     shouldStartNameWithService: true
 
