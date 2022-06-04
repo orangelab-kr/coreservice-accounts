@@ -2,9 +2,9 @@ import {
   NotificationModel,
   NotificationType,
   Prisma,
-  UserModel,
+  UserModel
 } from '@prisma/client';
-import { $$$, Joi, messaging, prisma, RESULT } from '..';
+import { $$$, Joi, prisma, RESULT } from '..';
 import { createFirebaseMessaging } from '../tools';
 
 export class Notification {

@@ -9,6 +9,11 @@ provider:
   timeout: 16
   apiGateway:
     shouldStartNameWithService: true
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - ssm:GetParameter
+      Resource: 'arn:aws:ssm:${aws:region}:${aws:accountId}:parameter/firebase/*'
 
 package:
   individually: true
@@ -21,8 +26,10 @@ plugins:
 
 custom:
   webpack:
-    includeModules: true
     packager: 'yarn'
+    includeModules:
+      forceExclude:
+        - aws-sdk
   serverless-offline:
     noPrependStageInUrl: true
 
