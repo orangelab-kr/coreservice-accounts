@@ -1,8 +1,6 @@
 import { PhoneModel, Prisma } from '@prisma/client';
-import { PhoneNumberFormat, PhoneNumberUtil } from 'google-libphonenumber';
+import { parsePhoneNumber } from 'libphonenumber-js';
 import { Joi, prisma, RESULT, sendMessageWithMessageGateway } from '../tools';
-
-const phoneUtil = PhoneNumberUtil.getInstance();
 
 export interface VerifiedPhoneInterface {
   phoneId: string;
@@ -12,10 +10,7 @@ export interface VerifiedPhoneInterface {
 
 export class Phone {
   public static getFormattedPhone(phoneNo: string): string {
-    return phoneUtil.format(
-      phoneUtil.parse(phoneNo, 'KR'),
-      PhoneNumberFormat.E164
-    );
+    return parsePhoneNumber(phoneNo, 'KR').format('E.164');
   }
 
   public static async sendVerify(
