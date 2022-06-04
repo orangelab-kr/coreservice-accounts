@@ -1,7 +1,7 @@
 import { UserModel } from '@prisma/client';
 import crypto from 'crypto';
 import Joi from 'joi';
-import { Notification, prisma, RESULT } from '..';
+import { getCoreServiceClient, Notification, prisma, RESULT } from '..';
 
 export class Referral {
   public static async referralUser(
@@ -16,14 +16,33 @@ export class Referral {
     const referrerUser = await Referral.getReferredUserOrThrow(referralCode);
     if (userId === referrerUser.userId) throw RESULT.CANNOT_REFERRAL_MYSELF();
     const referrerUserId = referrerUser.userId;
+    const couponGroupId = process.env.REFERRAL_COUPON_GROUP_ID;
+    if (couponGroupId) {
+      try {
+        await getCoreServiceClient('payments').post(
+          `users/${referrerUserId}/coupons`,
+          { json: { couponGroupId } }
+        );
 
-    // todo: 쿠폰을 주는 코드가 포함되어 있어야함
+        await Notification.sendNotification(referrerUser, {
+          type: 'info',
+          title: `🥳 익명의 누군가가 추천인을 등록했습니다.`,
+          description: `추천인 쿠폰이 지급되었습니다.`,
+        });
+      } catch (err) {}
 
-    await Notification.sendNotification(referrerUser, {
-      type: 'info',
-      title: `🥳 익명의 누군가가 추천인을 등록했습니다.`,
-      description: `추천인 쿠폰이 지급되었습니다.`,
-    });
+      try {
+        await getCoreServiceClient('payments').post(`users/${userId}/coupons`, {
+          json: { couponGroupId },
+        });
+
+        await Notification.sendNotification(user, {
+          type: 'info',
+          title: `🥳 추천인을 등록을 완료하였습니다 `,
+          description: `추천인 쿠폰이 지급되었습니다.`,
+        });
+      } catch (err) {}
+    }
 
     return prisma.userModel.update({
       where: { userId },
