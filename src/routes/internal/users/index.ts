@@ -12,6 +12,7 @@ import {
   User,
   Wrapper,
 } from '../../..';
+import { getInternalUsersCentercoinRouter } from './centercoin';
 
 export * from './license';
 export * from './methods';
@@ -57,6 +58,12 @@ export function getInternalUsersRouter(): Router {
     '/:userId/points',
     InternalUserMiddleware(),
     getInternalUsersPointsRouter()
+  );
+
+  router.use(
+    '/:userId/centercoin',
+    InternalUserMiddleware(),
+    getInternalUsersCentercoinRouter()
   );
 
   router.post(

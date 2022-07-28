@@ -40,6 +40,9 @@ model UserModel {
   referrerUserId String?
   referrerUser   UserModel? @relation("referredUsers", fields: [referrerUserId], references: [userId])
 
+  centercoinAddress String?
+  centercoinBalance Int     @default(0)
+
   receiveSMS   DateTime?
   receivePush  DateTime?
   receiveEmail DateTime?

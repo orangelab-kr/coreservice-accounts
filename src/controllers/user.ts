@@ -10,7 +10,7 @@ import {
   Phone,
   prisma,
   Referral,
-  RESULT
+  RESULT,
 } from '..';
 import { Legacy } from './legacy';
 import { VerifiedPhoneInterface } from './phone';
@@ -22,6 +22,7 @@ export interface PreUserModel {
   email?: string;
   birthday: Date;
   realname: string;
+  centercoinAddress?: string;
 }
 
 export interface UserInfo {
@@ -29,6 +30,7 @@ export interface UserInfo {
   birthday: Date;
   email?: string;
   phone: VerifiedPhoneInterface;
+  centercoinAddress?: string;
   licenseStr?: string;
   methods?: {
     kakao?: string;
@@ -68,6 +70,7 @@ export class User {
         { realname: { contains: search } },
         { phoneNo: { contains: search } },
         { email: { contains: search } },
+        { centercoinAddress: { contains: search } },
         { license: { licenseStr: { contains: search } } },
       ];
     }
@@ -89,6 +92,7 @@ export class User {
       email,
       phone,
       licenseStr,
+      centercoinAddress,
       methods,
       receiveSMS,
       receivePush,
@@ -104,6 +108,9 @@ export class User {
         code: Joi.string().allow(null).optional(),
       }).required(),
       licenseStr: Joi.string().optional(),
+      centercoinAddress: Joi.string()
+        .regex(/^0x[a-fA-F0-9]{40}$/)
+        .optional(),
       methods: Joi.object({
         kakao: Joi.string().allow(null).optional(),
       }).optional(),
@@ -136,6 +143,7 @@ export class User {
           birthday,
           email,
           phoneNo,
+          centercoinAddress,
           referralCode,
           receiveSMS,
           receivePush,
@@ -188,6 +196,7 @@ export class User {
       birthday,
       email,
       phone,
+      centercoinAddress,
       receiveSMS,
       receivePush,
       receiveEmail,
@@ -201,6 +210,10 @@ export class User {
         phoneNo: Joi.string().required(),
         code: Joi.string().allow(null).required(),
       }).optional(),
+      centercoinAddress: Joi.string()
+        .regex(/^0x[a-fA-F0-9]{40}$/)
+        .allow(null)
+        .optional(),
       receiveSMS: Joi.boolean()
         .custom((e) => (e ? new Date() : null))
         .optional(),
@@ -216,6 +229,7 @@ export class User {
     const where = { userId };
     const data: Prisma.UserModelUpdateInput = {
       profileUrl,
+      centercoinAddress,
       receiveSMS,
       receivePush,
       receiveEmail,
