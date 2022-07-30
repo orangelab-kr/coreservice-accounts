@@ -4,15 +4,16 @@ import { Joi, logger, Notification, prisma } from '..';
 export class Centercoin {
   public static async setBalance(
     user: UserModel,
-    props: { centercoinBalance: number }
+    props: { centercoinBalance: number; message?: string }
   ): Promise<UserModel> {
     const { userId, realname } = user;
-    const { centercoinBalance } = await Joi.object({
+    const { centercoinBalance, message } = await Joi.object({
       centercoinBalance: Joi.number().integer().min(0).required(),
+      message: Joi.string().allow(null).optional(),
     }).validateAsync(props);
 
     logger.info(
-      `센터코인 / ${realname}(${userId})님에게 ${centercoinBalance.toLocaleString()}원으로 지정합니다.`
+      `센터코인 / ${realname}(${userId})님에게 ${centercoinBalance.toLocaleString()}원으로 지정합니다. (${message})`
     );
 
     return prisma.userModel.update({
@@ -23,15 +24,16 @@ export class Centercoin {
 
   public static async increaseBalance(
     user: UserModel,
-    props: { centercoinBalance: number }
+    props: { centercoinBalance: number; message?: string }
   ): Promise<UserModel> {
     const { userId, realname } = user;
-    const { centercoinBalance } = await Joi.object({
+    const { centercoinBalance, message } = await Joi.object({
       centercoinBalance: Joi.number().integer().min(0).required(),
+      message: Joi.string().allow(null).optional(),
     }).validateAsync(props);
 
     logger.info(
-      `센터코인 / ${realname}(${userId})님에게 ${centercoinBalance.toLocaleString()}원을 지급합니다.`
+      `센터코인 / ${realname}(${userId})님에게 ${centercoinBalance.toLocaleString()}원을 지급합니다. (${message})`
     );
 
     await Notification.sendNotification(user, {
@@ -48,15 +50,16 @@ export class Centercoin {
 
   public static async decreaseBalance(
     user: UserModel,
-    props: { centercoinBalance: number }
+    props: { centercoinBalance: number; message?: string }
   ): Promise<UserModel> {
     const { userId, realname } = user;
-    const { centercoinBalance } = await Joi.object({
+    const { centercoinBalance, message } = await Joi.object({
       centercoinBalance: Joi.number().integer().min(0).required(),
+      message: Joi.string().allow(null).optional(),
     }).validateAsync(props);
 
     logger.info(
-      `센터코인 / ${realname}(${userId})님에게 ${centercoinBalance.toLocaleString()}원을 차감합니다.`
+      `센터코인 / ${realname}(${userId})님에게 ${centercoinBalance.toLocaleString()}원을 차감합니다. (${message})`
     );
 
     return prisma.userModel.update({
