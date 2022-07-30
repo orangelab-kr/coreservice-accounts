@@ -7,11 +7,13 @@ import {
   Level,
   License,
   Method,
+  Notification,
   Phone,
   prisma,
   Referral,
   RESULT,
 } from '..';
+import { reportMonitoringMetrics } from '../tools/monitoring';
 import { Legacy } from './legacy';
 import { VerifiedPhoneInterface } from './phone';
 
@@ -245,6 +247,13 @@ export class User {
         await Phone.isUnusedPhoneNoOrThrow(phoneObj.phoneNo);
         data.phoneNo = phoneObj.phoneNo;
       }
+    }
+
+    if (!user.centercoinAddress && centercoinAddress) {
+      await reportMonitoringMetrics('centercoinRegistered', {
+        user,
+        centercoinAddress,
+      });
     }
 
     transactions.push($PQ(prisma.userModel.update({ where, data })));

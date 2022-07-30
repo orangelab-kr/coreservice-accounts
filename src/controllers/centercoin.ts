@@ -1,5 +1,6 @@
 import { UserModel } from '@prisma/client';
 import { Joi, logger, Notification, prisma } from '..';
+import { reportMonitoringMetrics } from '../tools/monitoring';
 
 export class Centercoin {
   public static async setBalance(
@@ -9,12 +10,18 @@ export class Centercoin {
     const { userId, realname } = user;
     const { centercoinBalance, message } = await Joi.object({
       centercoinBalance: Joi.number().integer().min(0).required(),
-      message: Joi.string().allow(null).optional(),
+      message: Joi.string().allow(null).default('설명 없음').optional(),
     }).validateAsync(props);
 
     logger.info(
       `센터코인 / ${realname}(${userId})님에게 ${centercoinBalance.toLocaleString()}원으로 지정합니다. (${message})`
     );
+
+    await reportMonitoringMetrics('centercoinSet', {
+      user,
+      centercoinBalance,
+      message,
+    });
 
     return prisma.userModel.update({
       where: { userId },
@@ -29,12 +36,18 @@ export class Centercoin {
     const { userId, realname } = user;
     const { centercoinBalance, message } = await Joi.object({
       centercoinBalance: Joi.number().integer().min(0).required(),
-      message: Joi.string().allow(null).optional(),
+      message: Joi.string().allow(null).default('설명 없음').optional(),
     }).validateAsync(props);
 
     logger.info(
       `센터코인 / ${realname}(${userId})님에게 ${centercoinBalance.toLocaleString()}원을 지급합니다. (${message})`
     );
+
+    await reportMonitoringMetrics('centercoinIncrease', {
+      user,
+      centercoinBalance,
+      message,
+    });
 
     await Notification.sendNotification(user, {
       type: 'info',
@@ -55,12 +68,18 @@ export class Centercoin {
     const { userId, realname } = user;
     const { centercoinBalance, message } = await Joi.object({
       centercoinBalance: Joi.number().integer().min(0).required(),
-      message: Joi.string().allow(null).optional(),
+      message: Joi.string().allow(null).default('설명 없음').optional(),
     }).validateAsync(props);
 
     logger.info(
       `센터코인 / ${realname}(${userId})님에게 ${centercoinBalance.toLocaleString()}원을 차감합니다. (${message})`
     );
+
+    await reportMonitoringMetrics('centercoinDecrease', {
+      user,
+      centercoinBalance,
+      message,
+    });
 
     return prisma.userModel.update({
       where: { userId },

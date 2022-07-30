@@ -1,5 +1,5 @@
-import { Logger } from '@nestjs/common';
 import axios from 'axios';
+import { logger } from './logger';
 
 export async function reportMonitoringMetrics(
   monitorId: string,
@@ -17,7 +17,7 @@ export async function reportMonitoringMetrics(
     });
   } catch (err: any) {
     const metricsJson = JSON.stringify(metricsData);
-    Logger.error(
+    logger.error(
       `Monitoring / Cannot sent monitoring metrics data. (${monitorId}, ${metricsJson})`
     );
   }

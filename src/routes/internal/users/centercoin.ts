@@ -27,7 +27,7 @@ export function getInternalUsersCentercoinRouter(): Router {
     '/',
     Wrapper(async (req) => {
       const { internal, body } = req;
-      const user = await Centercoin.increaseBalance(internal.user, body);
+      const user = await Centercoin.decreaseBalance(internal.user, body);
       throw RESULT.SUCCESS({ details: { user } });
     })
   );
