@@ -49,10 +49,9 @@ model UserModel {
 
   legacyUserId String?
 
-  usedAt    DateTime  @default(now())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  usedAt    DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model PhoneModel {
@@ -64,7 +63,6 @@ model PhoneModel {
   usedAt    DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
 }
 
 model MethodModel {
@@ -77,9 +75,8 @@ model MethodModel {
   provider MethodProvider
   identity String
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model SessionModel {
@@ -91,10 +88,9 @@ model SessionModel {
   platform       String  @default("")
   messagingToken String?
 
-  usedAt    DateTime  @default(now())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  usedAt    DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model LicenseModel {
@@ -106,9 +102,8 @@ model LicenseModel {
   birthday   DateTime
   licenseStr String?
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model PassProgramModel {
@@ -126,9 +121,8 @@ model PassProgramModel {
 
   passes PassModel[]
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model PassModel {
@@ -145,10 +139,9 @@ model PassModel {
   passProgramId String
   passProgram   PassProgramModel @relation(fields: [passProgramId], references: [passProgramId], onDelete: Cascade)
 
-  requestedAt DateTime  @default(now())
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime?
+  requestedAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 enum NotificationType {
@@ -172,7 +165,6 @@ model NotificationModel {
   readedAt  DateTime?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
 }
 
 model SecessionModel {
@@ -183,9 +175,8 @@ model SecessionModel {
 
   reason String? @db.Text
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum PointType {
@@ -201,9 +192,8 @@ model PointModel {
   userId String
   user   UserModel @relation(fields: [userId], references: [userId])
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model LevelModel {
@@ -219,7 +209,6 @@ model LevelModel {
 
   users UserModel[]
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

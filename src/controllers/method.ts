@@ -35,7 +35,6 @@ export class Method {
           identity: showIdentity,
           createdAt: true,
           updatedAt: true,
-          deletedAt: true,
         },
       });
   }
@@ -67,7 +66,6 @@ export class Method {
           identity: showIdentity,
           createdAt: true,
           updatedAt: true,
-          deletedAt: true,
         },
       });
   }
@@ -97,7 +95,6 @@ export class Method {
         identity: showIdentity,
         createdAt: true,
         updatedAt: true,
-        deletedAt: true,
       },
     });
 

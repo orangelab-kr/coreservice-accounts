@@ -18,7 +18,6 @@ export interface CouponModel {
   expiredAt: string;
   createdAt: string;
   updatedAt: string;
-  deletedAt: null;
 }
 
 export interface CouponGroupModel {
@@ -30,7 +29,6 @@ export interface CouponGroupModel {
   limit: number;
   createdAt: string;
   updatedAt: string;
-  deletedAt: null;
 }
 
 export class Pass {
