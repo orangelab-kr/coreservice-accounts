@@ -7,6 +7,7 @@ import {
   Type,
 } from 'class-transformer';
 import {
+  IsArray,
   IsBoolean,
   IsOptional,
   IsString,
@@ -16,7 +17,7 @@ import {
 import { firestore } from 'firebase-admin';
 import 'reflect-metadata';
 import { prisma } from '..';
-import { $$$, RESULT } from '../tools';
+import { $$$, getCoreServiceClient } from '../tools';
 import { createLegacyFirestore } from '../tools/legacyFirestore';
 import { License } from './license';
 import { Phone } from './phone';
@@ -43,6 +44,11 @@ export class LegacyUser {
   birth!: Date;
 
   @Expose()
+  @IsArray()
+  @IsString({ each: true })
+  tpaybillkey!: string[];
+
+  @Expose()
   @IsOptional()
   @IsString()
   @Type(() => Array)
@@ -54,10 +60,12 @@ export class LegacyUser {
   )
   licenseNumber?: string;
 
+  // eslint-disable-next-line @typescript-eslint/no-inferrable-types
   @Expose()
   @IsBoolean()
   push: boolean = false;
 
+  // eslint-disable-next-line @typescript-eslint/no-inferrable-types
   @Expose()
   @IsBoolean()
   sms: boolean = false;
@@ -85,6 +93,17 @@ export class Legacy {
     const errors = await validate(user);
     if (errors.length > 0) return null;
     return user;
+  }
+
+  public static async migrateCards(
+    user: UserModel,
+    legacyUser: LegacyUser
+  ): Promise<void> {
+    if (!legacyUser.tpaybillkey) return;
+    const billingKeys = legacyUser.tpaybillkey;
+    await getCoreServiceClient('payments')
+      .post(`users/${user.userId}/cards/migrate`, { json: { billingKeys } })
+      .json();
   }
 
   public static async migrateUser(legacyUser: LegacyUser): Promise<UserModel> {
@@ -120,6 +139,7 @@ export class Legacy {
       .doc(legacyUserId)
       .update({ coreserviceUserId: user.userId });
 
+    await Legacy.migrateCards(user, legacyUser);
     return prisma.userModel.update({
       where: { userId: user.userId },
       data: { legacyUserId },
