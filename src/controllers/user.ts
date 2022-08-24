@@ -7,7 +7,6 @@ import {
   Level,
   License,
   Method,
-  Notification,
   Phone,
   prisma,
   Referral,
@@ -206,7 +205,7 @@ export class User {
       realname: Joi.string().max(16).optional(),
       profileUrl: Joi.string().uri().allow(null).optional(),
       birthday: Joi.date().optional(),
-      email: Joi.string().email().optional(),
+      email: Joi.string().email().allow(null).optional(),
       phone: Joi.object({
         phoneId: Joi.string().uuid().required(),
         phoneNo: Joi.string().required(),
