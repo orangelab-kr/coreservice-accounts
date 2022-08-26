@@ -171,12 +171,12 @@ model SecessionModel {
   secssionId String @id @default(uuid())
 
   userId String
-  user   UserModel @relation(fields: [userId], references: [userId], onDelete: Cascade)
-
   reason String? @db.Text
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  UserModel       UserModel? @relation(fields: [userModelUserId], references: [userId])
+  userModelUserId String?
 }
 
 enum PointType {
