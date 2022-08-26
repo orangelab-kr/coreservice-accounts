@@ -332,8 +332,6 @@ export class User {
       reason: Joi.string().allow(null).optional(),
     }).validateAsync(props);
     await prisma.$transaction([
-      prisma.methodModel.deleteMany({ where: { userId } }),
-      prisma.sessionModel.deleteMany({ where: { userId } }),
       prisma.userModel.delete({ where: { userId } }),
       prisma.secessionModel.create({ data: { userId, reason } }),
     ]);
