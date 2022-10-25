@@ -1,6 +1,12 @@
 import { PhoneModel, Prisma } from '@prisma/client';
 import { parsePhoneNumber } from 'libphonenumber-js';
-import { Joi, prisma, RESULT, sendMessageWithMessageGateway } from '../tools';
+import {
+  Joi,
+  logger,
+  prisma,
+  RESULT,
+  sendMessageWithMessageGateway,
+} from '../tools';
 
 export interface VerifiedPhoneInterface {
   phoneId: string;
@@ -21,11 +27,15 @@ export class Phone {
     const code = Phone.generateRandomCode();
     await Phone.revokeVerify(phoneNo);
     if (!debug) {
-      await sendMessageWithMessageGateway({
-        name: 'verify',
-        phone: phoneNo,
-        fields: { code },
-      });
+      try {
+        await sendMessageWithMessageGateway({
+          name: 'verify',
+          phone: phoneNo,
+          fields: { code },
+        });
+      } catch (err: any) {
+        logger.error(`메세지를 전송할 수 없습니다. ${err.messag}`);
+      }
     }
 
     const phone = await prisma.phoneModel.create({
