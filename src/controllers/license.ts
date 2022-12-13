@@ -1,5 +1,7 @@
+import { $$$, Joi, PreUserModel, RESULT, getPlatformClient, prisma } from '..';
 import { LicenseModel, Prisma, PrismaPromise, UserModel } from '@prisma/client';
-import { $$$, getPlatformClient, Joi, PreUserModel, prisma, RESULT } from '..';
+
+import dayjs from 'dayjs';
 
 export class License {
   public static async getLicense(
@@ -80,9 +82,13 @@ export class License {
 
       const platformClient = getPlatformClient();
       const form = await schema.validateAsync(props);
+      const birthday = dayjs(form.birthday);
       const json = {
         realname: form.realname,
-        birthday: form.birthday,
+        birthday: birthday
+          .add(birthday.utcOffset(), 'm')
+          .add(1, 'days')
+          .format('YYYY-MM-DD'),
         license: form.licenseStr.split('-'),
       };
 
